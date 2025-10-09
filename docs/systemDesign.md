@@ -8,7 +8,7 @@ The process involves defining entities (objects), their attributes (characterist
 | ---------------------- | ------------------------------------- |
 | Users                  | Registered user with verified email.  |
 | Urls                   | Shortened URL belonging to a user.    |
-| UrlAnalytic            | Each time a shortened URL is visited. |
+| UrlAnalytics           | Each time a shortened URL is visited. |
 | EmailVerificationTokens| Token to verify user email.           |
 
 For user:
@@ -21,6 +21,7 @@ For user:
 | password  | string          | Hashed password       |     
 | verifiedAt| timestamp       | Email verified time   |     
 | createdAt | timestamp       | User created time     |     
+| deletedAt | timestamp       | User deleted time     |     
 
 For email authentication :
 
@@ -29,7 +30,7 @@ For email authentication :
 | id           | UUID      | Primary key     |
 | userId       | UUID (FK) | Associated user |
 | token(unique)| string    | Unique token    |
-| expireAt     | timestamp | Expiration date |
+| expiryAt     | timestamp | Expiration date |
 
 For each Url:
 
@@ -38,9 +39,10 @@ For each Url:
 | id         | UUID            | Primary key          |
 | shortUrl   | string (unique) | Generated short code |
 | longUrl    | text            | Original URL         |
-| expiryDate | date            | Expiration date      |
+| expiryAt   | date            | Expiration date      |
 | userId     | UUID (FK)       | Reference to `User`  |
 | createdAt  | timestamp       | Url created time     |
+| deletedAt  | timestamp       | Url deleted time     |   
 
 For Url analytics: 
 
