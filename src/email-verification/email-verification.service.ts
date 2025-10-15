@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EmailVerification } from './entities/email-verification.entity';
@@ -54,5 +54,15 @@ export class EmailVerificationService {
     });
 
     await this.emailVerificationRepo.save({ user, token, expires_at });
+  }
+
+  public async resendVerificationLink(id : string){
+    const user = await this.userRepo.findOneBy({ id });
+    if (!user) throw new Error('User not found');
+
+    if(user.verified_at){
+      throw new BadRequestException('Email already verified');
+    }
+    await this.sendEmail(user.email)
   }
 }
