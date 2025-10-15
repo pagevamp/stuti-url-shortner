@@ -23,9 +23,6 @@ export class EmailVerification {
   @Column({ type: 'timestamptz' })
   expires_at: Date;
 
-  @Column({ default: false })
-  is_used: boolean;
-
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 }
