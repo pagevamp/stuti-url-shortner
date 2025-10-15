@@ -18,7 +18,7 @@ export class EmailVerificationService {
     private readonly configService: ConfigService,
   ) {}
 
-  public async SendEmail(email: string) {
+  public async sendEmail(email: string) {
     const user = await this.userRepo.findOneBy({ email });
     if (!user) throw new Error('User not found');
 

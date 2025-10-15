@@ -6,9 +6,9 @@ import { Body, Controller, Post } from '@nestjs/common';
 export class EmailVerificationController {
   constructor(private readonly emailVerificationService: EmailVerificationService) {}
 
-  @Post('send')
-  async SendEmail(@Body() dto: RequestEmailDto) {
-    await this.emailVerificationService.SendEmail(dto.email);
+  @Post('send-email')
+  async sendEmail(@Body() dto: RequestEmailDto) {
+    await this.emailVerificationService.sendEmail(dto.email);
     return { message: 'Verification link sent to your email' };
   }
 }
