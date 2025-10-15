@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import z from 'zod';
 import { AppDataSourceOptions } from 'config/data-source';
 import { UserModule } from 'user/user.module';
+import { EmailVerificationModule } from 'email-verification/email-verification.module';
 
 const validationSchema = z.object({
   DB_HOST: z.string(),
@@ -31,6 +32,7 @@ const validationSchema = z.object({
     }),
     TypeOrmModule.forRoot(AppDataSourceOptions),
     UserModule,
+    EmailVerificationModule,
   ],
   controllers: [],
   providers: [],

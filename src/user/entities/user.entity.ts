@@ -26,6 +26,6 @@ export class User {
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   updated_at: Date;
 
-  @CreateDateColumn({ type: 'timestamptz', default: () => 'NOW()' })
+  @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 }
