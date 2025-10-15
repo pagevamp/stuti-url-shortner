@@ -1,10 +1,9 @@
-import { EmailVerificationModule } from 'email_verification/email_verification.module';
-import { UsersModule } from 'users/users.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import z from 'zod';
-import { AppDataSourceOptions } from 'data-source';
+import { AppDataSourceOptions } from 'config/data-source';
+import { UserModule } from 'user/user.module';
 
 const validationSchema = z.object({
   DB_HOST: z.string(),
@@ -31,8 +30,7 @@ const validationSchema = z.object({
       },
     }),
     TypeOrmModule.forRoot(AppDataSourceOptions),
-    UsersModule,
-    EmailVerificationModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
