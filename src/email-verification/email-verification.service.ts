@@ -22,6 +22,10 @@ export class EmailVerificationService {
     const user = await this.userRepo.findOneBy({ email });
     if (!user) throw new Error('User not found');
 
+    const expires_at = new Date(
+      Date.now() + Number(this.configService.get('JWT_EXPIRATION_TIME')) * 1000,
+    );
+
     const token = this.jwtService.sign(
       { email },
       {
@@ -32,7 +36,7 @@ export class EmailVerificationService {
 
     const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
 
-    const text = `Hello from Stuti-Url-Shortener. \n\n Please click on this link : ${url} to verify your email address`;
+    const text = `Hello from Stuti-Url-Shortener. \n\nPlease click on this link below : \n\n${url} \n\nto verify your email address. \n\nThis link expires on ${expires_at}`;
 
     const transporter = nodemailer.createTransport({
       service: this.configService.get('EMAIL_SERVICE'),
@@ -49,9 +53,6 @@ export class EmailVerificationService {
       text,
     });
 
-    const expires_at = new Date(
-      Date.now() + Number(this.configService.get('JWT_EXPIRATION_TIME')) * 1000,
-    );
     await this.emailVerificationRepo.save({ user, token, expires_at });
   }
 }
