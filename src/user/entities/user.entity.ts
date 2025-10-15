@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { EmailVerification } from '../../email-verification/entities/email-verification.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @Entity('users')
 export class User {
@@ -7,6 +8,9 @@ export class User {
   }
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @OneToMany(() => EmailVerification, (verification) => verification.user)
+    emailVerifications: EmailVerification[]; 
 
   @Column()
   name: string;
@@ -29,3 +33,5 @@ export class User {
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 }
+
+
