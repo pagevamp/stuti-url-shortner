@@ -1,16 +1,40 @@
-import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { ConfigModule } from '@nestjs/config'
+import { EmailVerificationModule } from 'email_verification/email_verification.module';
+import { UsersModule } from 'users/users.module';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import z from 'zod';
+import { AppDataSourceOptions } from 'data-source';
+
+const validationSchema = z.object({
+  DB_HOST: z.string(),
+  DB_PORT: z.coerce.number(),
+  DB_USER: z.string(),
+  DB_PASSWORD: z.string(),
+  DB_NAME: z.string(),
+  DB_SYNCHRONIZE: z.string(),
+  PORT: z.coerce.number(),
+});
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`],
+      validate: (env) => {
+        const parsed = validationSchema.safeParse(env);
+        if (!parsed.success) {
+          console.error('Invalid environment variables', parsed.error.flatten().fieldErrors);
+          throw new Error('Invalid environment variables');
+        }
+        return parsed.data;
+      },
     }),
+    TypeOrmModule.forRoot(AppDataSourceOptions),
+    UsersModule,
+    EmailVerificationModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
