@@ -20,7 +20,5 @@ export class UserService {
 
     user.verified_at = new Date();
     await this.userRepo.save(user);
-
-    return 'User email successfully verified';
   }
 }

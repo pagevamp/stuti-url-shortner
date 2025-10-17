@@ -71,11 +71,12 @@ export class EmailVerificationService {
       if (typeof payload === 'object' && 'email' in payload) {
         return payload.email;
       }
-      throw new BadRequestException();
+      throw new BadRequestException('Invalid token payload structure');
     } catch (error) {
       if (error?.name === 'TokenExpiredError') {
         throw new BadRequestException('Your email confirmation token has expired');
       }
     }
+    throw new BadRequestException('Failed to verify email token');
   }
 }
