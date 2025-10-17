@@ -1,6 +1,7 @@
+import { UserService } from './../user/user.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EmailVerification } from './entities/email-verification.entity';
@@ -17,6 +18,7 @@ export class EmailVerificationService {
     private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly userService: UserService,
     private readonly mailService: MailService,
   ) {}
 
@@ -46,5 +48,27 @@ export class EmailVerificationService {
     });
 
     await this.emailVerificationRepo.save({ user, token, expires_at });
+  }
+
+  public async verifyEmail(email: string) {
+    await this.userService.confirmEmail(email);
+  }
+
+  public async decodeVerificationToken(token: string) {
+    try {
+      const payload = await this.jwtService.verify(token, {
+        secret: this.configService.get('JWT_SECRET'),
+      });
+
+      if (typeof payload === 'object' && 'email' in payload) {
+        return payload.email;
+      }
+      throw new BadRequestException('Invalid token payload structure');
+    } catch (error) {
+      if (error?.name === 'TokenExpiredError') {
+        throw new BadRequestException('Your email confirmation token has expired');
+      }
+    }
+    throw new BadRequestException('Failed to verify email token');
   }
 }
