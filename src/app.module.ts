@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import z from 'zod';
 import { AppDataSourceOptions } from 'config/data-source';
 import { UserModule } from 'user/user.module';
-import { EmailVerificationModule } from 'email-verification/email-verification.module';
+import { EmailVerificationModule } from './email-verification/email-verification.module';
 
 const validationSchema = z.object({
   DB_HOST: z.string(),
@@ -14,6 +14,12 @@ const validationSchema = z.object({
   DB_NAME: z.string(),
   DB_SYNCHRONIZE: z.string(),
   PORT: z.coerce.number(),
+  JWT_SECRET: z.string(),
+  JWT_EXPIRATION_TIME: z.string(),
+  EMAIL_CONFIRMATION_URL: z.string(),
+  EMAIL_USER: z.string(),
+  EMAIL_PASSWORD: z.string(),
+  EMAIL_SERVICE: z.string(),
 });
 
 @Module({
