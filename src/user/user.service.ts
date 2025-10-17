@@ -15,7 +15,7 @@ export class UserService {
     if (!user) throw new BadRequestException('User not found');
 
     if (user.verified_at) {
-      return 'This user has already been verified';
+      throw new BadRequestException('Email already verified');
     }
 
     user.verified_at = new Date();
