@@ -56,8 +56,8 @@ export class EmailVerificationService {
     await this.emailVerificationRepo.save({ user, token, expires_at });
   }
 
-  public async resendVerificationLink(id : string){
-    const user = await this.userRepo.findOneBy({ id });
+  public async resendVerificationLink(email : string){
+    const user = await this.userRepo.findOneBy({ email });
     if (!user) throw new Error('User not found');
 
     if(user.verified_at){

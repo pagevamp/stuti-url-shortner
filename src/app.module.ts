@@ -12,7 +12,6 @@ const validationSchema = z.object({
   DB_USER: z.string(),
   DB_PASSWORD: z.string(),
   DB_NAME: z.string(),
-  DB_SYNCHRONIZE: z.string(),
   PORT: z.coerce.number(),
   JWT_SECRET: z.string(),
   JWT_EXPIRATION_TIME: z.string(),

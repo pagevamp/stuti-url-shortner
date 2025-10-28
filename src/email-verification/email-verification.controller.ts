@@ -3,7 +3,7 @@ import { ResendEmailDto } from './dto/resend-email.dto';
 import { EmailVerificationService } from './email-verification.service';
 import { Body, Controller, Post, Req } from '@nestjs/common';
 
-@Controller('email-verification')
+@Controller('email-verifications')
 export class EmailVerificationController {
   constructor(private readonly emailVerificationService: EmailVerificationService) {}
 
@@ -15,7 +15,7 @@ export class EmailVerificationController {
 
   @Post('resend-email')
   async resendVerificationLink(@Body() dto: ResendEmailDto) {
-    await this.emailVerificationService.resendVerificationLink(dto.id);
+    await this.emailVerificationService.resendVerificationLink(dto.email);
 
     return 'Verification link has been sent to your email again';
   }
