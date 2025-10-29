@@ -1,7 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { EmailVerificationService } from './email-verification.service';
+import { Controller } from '@nestjs/common';
 
-@Controller('email-verification')
-export class EmailVerificationController {
-  constructor(private readonly emailVerificationService: EmailVerificationService) {}
-}
+@Controller('email-verifications')
+export class EmailVerificationController {}
