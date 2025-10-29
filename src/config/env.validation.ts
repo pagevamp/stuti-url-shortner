@@ -1,4 +1,4 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsEmail } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class EnvConfig {
@@ -31,6 +31,7 @@ export class EnvConfig {
   @IsString()
   EMAIL_CONFIRMATION_URL: string;
 
+  @IsEmail()
   @IsString()
   EMAIL_USER: string;
 
