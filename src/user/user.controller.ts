@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserService } from './user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Throttle } from '@nestjs/throttler';
 
 
 @Controller('users')
@@ -14,6 +15,7 @@ export class UserController {
     return { message: 'User registered successfully. Please verify your email.', data: { user } };
   }
 
+  @Throttle({ default: { ttl: 1000, limit: 15 } })
   @Get('/')
   async getAllUsers() {
     const users = await this.usersService.getAllUsers();
