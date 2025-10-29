@@ -28,7 +28,7 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('User not found');
 
     const validPassword = await this.hashService.comparePassword(pass, user.password);
-    if (validPassword === false) {
+    if (!validPassword) {
       throw new UnauthorizedException('The password does not match!');
     }
 
