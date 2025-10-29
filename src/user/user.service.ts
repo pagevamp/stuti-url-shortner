@@ -33,9 +33,16 @@ export class UserService {
       where: { email },
     });
     if (userByEmail) {
-      throw new BadRequestException('Username already in use');
+      throw new BadRequestException('Email already in use');
     }
 
+    const userByUsername = await this.userRepo.findOne({
+      where: { username },
+    });
+    if (userByUsername) {
+      throw new BadRequestException('Username already in use');
+    }
+    
     const hashedPassword = await this.hashService.hashPassword(password);
 
     const user = this.userRepo.create({ name, username, email, password: hashedPassword });
