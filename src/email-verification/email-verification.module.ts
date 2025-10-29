@@ -4,11 +4,11 @@ import { EmailVerification } from './entities/email-verification.entity';
 import { EmailVerificationController } from './email-verification.controller';
 import { EmailVerificationService } from './email-verification.service';
 import { User } from '../user/entities/user.entity';
-import { JwtService } from '@nestjs/jwt';
+
 
 @Module({
   imports: [TypeOrmModule.forFeature([EmailVerification, User])],
   controllers: [EmailVerificationController],
-  providers: [EmailVerificationService, JwtService],
+  providers: [EmailVerificationService],
 })
 export class EmailVerificationModule {}

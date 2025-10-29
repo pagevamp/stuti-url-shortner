@@ -1,0 +1,24 @@
+import { Body, Controller, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { UrlService } from './url.service';
+import { ShortenUrlDto } from './dto/shorten-url.dto';
+import { AuthGuard } from 'auth/auth.guard';
+import { Response } from 'express';
+
+@Controller('urls')
+export class UrlController {
+  constructor(private readonly urlService: UrlService) {}
+
+  @UseGuards(AuthGuard)
+  @Post('shorten-url')
+  async shorten(@Body() dto: ShortenUrlDto) {
+    const short_url = await this.urlService.shortenUrl(dto.user_id, dto.original_url);
+    return { message: 'The Url is shortened', data: { short_url } };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':shortUrl')
+  async getShortUrl(@Param('shortUrl') short_url: string, @Res() res: Response) {
+    const originalUrl = await this.urlService.getOriginalUrl(short_url);
+    res.redirect(originalUrl);
+  }
+}
