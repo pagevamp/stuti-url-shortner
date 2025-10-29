@@ -1,13 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EmailVerificationService } from 'email-verification/email-verification.service';
 import { EmailVerification } from 'email-verification/entities/email-verification.entity';
 import { Repository } from 'typeorm';
 import { User } from 'user/entities/user.entity';
 import { UserService } from 'user/user.service';
 import { MailService } from 'utils/mail.service';
+import { HashService } from 'user/hash.service';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +20,26 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
+    private readonly hashService: HashService,
   ) {}
+
+  public async login(username: string, pass: string) {
+    const user = await this.userRepo.findOne({ where: { username } });
+    if (!user) throw new UnauthorizedException('User not found');
+
+    const validPassword = await this.hashService.comparePassword(pass, user.password);
+    if (validPassword === false) {
+      throw new UnauthorizedException('The password does not match!');
+    }
+
+    const payload = { sub: user.id, username: user.username };
+    return {
+      access_token: await this.jwtService.signAsync(payload, {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}s`,
+      }),
+    };
+  }
 
   public async sendEmail(email: string) {
     const user = await this.userRepo.findOneBy({ email });
@@ -34,7 +53,7 @@ export class AuthService {
       { email },
       {
         secret: this.configService.get('JWT_SECRET'),
-        expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME') / 60} mins`,
+        expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}s`,
       },
     );
 
@@ -43,7 +62,7 @@ export class AuthService {
     await this.mailService.sendMail(email, {
       template: 'email',
       from: this.configService.get('EMAIL_USER'),
-      to : email,
+      to: email,
       subject: `Verify Your Email Address`,
       project: '.SUS',
       url,
