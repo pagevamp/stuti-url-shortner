@@ -2,13 +2,13 @@ import { EnvConfig } from './config/env.validation';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import z from 'zod';
 import { AppDataSourceOptions } from 'config/data-source';
 import { UserModule } from 'user/user.module';
 import { EmailVerificationModule } from './email-verification/email-verification.module';
 import { AuthModule } from 'auth/auth.module';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
+import { UrlModule } from 'url/url.module';
 
 @Module({
   imports: [
@@ -38,6 +38,7 @@ import { validateSync } from 'class-validator';
     UserModule,
     EmailVerificationModule,
     AuthModule,
+    UrlModule,
   ],
   controllers: [],
   providers: [],
