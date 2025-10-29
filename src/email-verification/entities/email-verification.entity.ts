@@ -6,9 +6,9 @@ import {
   CreateDateColumn,
   JoinColumn,
 } from 'typeorm';
-import { User } from 'user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 
-@Entity()
+@Entity('email_verifications')
 export class EmailVerification {
   @PrimaryGeneratedColumn()
   id: string;
