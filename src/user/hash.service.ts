@@ -13,4 +13,10 @@ export class HashService {
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     return `${salt}.${hash.toString('hex')}`;
   }
+
+  async comparePassword(pass: string, password: string): Promise<boolean> {
+    const [salt, key] = password.split('.');
+    const hashBuffer = (await scrypt(pass, salt, 32)) as Buffer;
+    return key === hashBuffer.toString('hex');
+  }
 }

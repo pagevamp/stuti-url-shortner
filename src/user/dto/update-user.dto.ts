@@ -2,7 +2,6 @@ import {
   IsEmail,
   IsOptional,
   IsString,
-  Length,
   Matches,
   MaxLength,
   MinLength,
@@ -28,5 +27,4 @@ export class UpdateUserDto {
   @IsEmail({}, { message: 'Email must be valid' })
   @MaxLength(100, { message: 'Email cannot exceed 100 characters' })
   email?: string;
-
 }
