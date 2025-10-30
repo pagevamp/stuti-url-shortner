@@ -11,10 +11,12 @@ import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'utils/mail.service';
 import { UserService } from 'user/user.service';
 import { HashService } from 'user/hash.service';
+import { LogService } from 'log/log.service';
+import { Log } from 'log/entities/log.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Url, User])],
-  providers: [UrlService, ConfigService, JwtService, MailService, UserService, HashService],
+  imports: [TypeOrmModule.forFeature([Url, User, Log])],
+  providers: [UrlService, ConfigService, JwtService, MailService, UserService, HashService, LogService],
   controllers: [UrlController],
 })
 export class UrlModule {}
