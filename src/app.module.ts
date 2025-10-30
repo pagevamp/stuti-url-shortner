@@ -12,7 +12,6 @@ import { UrlModule } from 'url/url.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
-import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -45,9 +44,6 @@ import { BullModule } from '@nestjs/bullmq';
           limit: 5,
         },
       ],
-    }),
-    BullModule.forRoot({
-      connection: { host: 'localhost', port: 6379 },
     }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(AppDataSourceOptions),
