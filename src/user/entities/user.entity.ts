@@ -1,6 +1,13 @@
 import { Url } from 'url/entities/url.entity';
 import { EmailVerification } from '../../email-verification/entities/email-verification.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -37,5 +44,3 @@ export class User {
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 }
-
-

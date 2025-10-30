@@ -1,11 +1,12 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'user/entities/user.entity';
 
@@ -27,11 +28,14 @@ export class Url {
   @Column({ unique: true })
   short_url: string;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @DeleteDateColumn({ type: 'timestamptz', nullable: true })
   deleted_at: Date;
 
   @Column({ type: 'timestamptz', nullable: true })
   expires_at: Date;
+
+  @Column({default:false})
+  notified : boolean
 
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;

@@ -27,11 +27,11 @@ export class MailService {
       project: string;
       subject: string;
       to: string;
-      url: string;
+      url?: string;
       expiresAt: string;
     },
   ) {
-    const templatePath = path.join(__dirname, '..', 'config', `${data.template || 'email'}.hbs`);
+    const templatePath = path.join(__dirname, '..', 'config', `${data.template}.hbs`);
     const source = fs.readFileSync(templatePath, 'utf8');
     const template = Handlebars.compile(source);
     const html = template(data);
@@ -43,9 +43,9 @@ export class MailService {
       html,
       attachments: [
         {
-          filename:'SUS.png',
-          path:path.join(__dirname, '..', 'assets', 'SUS.png'),
-          cid:'SUS',
+          filename: 'SUS.png',
+          path: path.join(__dirname, '..', 'assets', 'SUS.png'),
+          cid: 'SUS',
         },
       ],
     });
