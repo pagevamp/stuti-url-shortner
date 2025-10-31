@@ -4,6 +4,7 @@ import { ShortenUrlDto } from './dto/shorten-url.dto';
 import { AuthGuard } from 'auth/auth.guard';
 import { Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
+import { ScheduledNotificationDto } from './dto/scheduled-notification.dto';
 
 @Controller('urls')
 export class UrlController {

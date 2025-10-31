@@ -8,6 +8,7 @@ export class Urls1761698820236 implements MigrationInterface {
         "user_id" uuid NOT NULL,
         "original_url" VARCHAR NOT NULL,
         "short_url" VARCHAR(255) UNIQUE NOT NULL,
+        "notified" BOOLEAN DEFAULT FALSE,
         "expires_at" timestamptz NULL,
         "created_at" timestamptz NOT NULL DEFAULT now(),
         "deleted_at" timestamptz,
