@@ -19,8 +19,8 @@ export class UrlController {
   @UseGuards(AuthGuard)
   @Throttle({ default: { ttl: 1000, limit: 15 } })
   @Get(':shortUrl')
-  async getShortUrl(@Param('shortUrl') short_url: string, @Res() res: Response) {
-    const originalUrl = await this.urlService.getOriginalUrl(short_url);
+  async getShortUrl(@Param('shortUrl') shortUrl: string, @Res() res: Response) {
+    const originalUrl = await this.urlService.getOriginalUrl(shortUrl);
     res.redirect(originalUrl);
   }
 }
