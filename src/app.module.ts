@@ -9,6 +9,8 @@ import { AuthModule } from 'auth/auth.module';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
 import { UrlModule } from 'url/url.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -34,6 +36,15 @@ import { UrlModule } from 'url/url.module';
         return envConfig;
       },
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 1000,
+          limit: 5,
+        },
+      ],
+    }),
+
     TypeOrmModule.forRoot(AppDataSourceOptions),
     UserModule,
     EmailVerificationModule,
@@ -41,6 +52,6 @@ import { UrlModule } from 'url/url.module';
     UrlModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [{provide: APP_GUARD, useClass:ThrottlerGuard }],
 })
 export class AppModule {}
