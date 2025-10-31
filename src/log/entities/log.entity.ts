@@ -5,7 +5,7 @@ export class Log {
   @PrimaryGeneratedColumn('uuid')
   readonly id: number;
 
-  @Column({type : 'varchar'})
+  @Column({ type: 'varchar' })
   readonly context: string;
 
   @Column({ type: 'text' })
@@ -14,6 +14,6 @@ export class Log {
   @Column({ type: 'json', nullable: true })
   readonly metadata?: Record<string, any>;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
 }
