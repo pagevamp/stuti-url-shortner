@@ -7,6 +7,8 @@ import { ConfigService } from '@nestjs/config';
 import { MailService } from 'utils/mail.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { LogService } from 'log/log.service';
+import { UrlAnalyticsService } from 'url-analytics/url-analytics.service';
+import { Request } from 'express';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 7);
 
@@ -19,6 +21,7 @@ export class UrlService {
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
     private readonly logService: LogService,
+    private readonly analyticsService: UrlAnalyticsService,
   ) {}
 
   async shortenUrl(user_id: string, original_url: string) {
@@ -44,9 +47,12 @@ export class UrlService {
     return short_url;
   }
 
-  async getOriginalUrl(short_url: string) {
+  async getOriginalUrl(short_url: string, req: Request) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
     if (!url) throw new Error('Could not find the provided Short Url');
+
+    await this.analyticsService.analytics(req, url.id);
+
     return url.original_url;
   }
 
@@ -89,7 +95,6 @@ export class UrlService {
         url.notified = true;
         this.urlRepo.save(url);
         this.logger.log(`Sent expiration email to ${url.user.email}`);
-        
       } catch (err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
         await this.logService.createLog(UrlService.name, `Failed to send email for URL ${url.id}`, {
