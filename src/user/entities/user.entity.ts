@@ -15,32 +15,32 @@ export class User {
     Object.assign(this, user);
   }
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  readonly id: string;
 
   @OneToMany(() => EmailVerification, (verification) => verification.user)
-  emailVerifications: EmailVerification[];
+  readonly emailVerifications: EmailVerification[];
 
   @OneToMany(() => Url, (url) => url.user)
-  urls: Url[];
+  readonly urls: Url[];
 
   @Column()
-  name: string;
+  readonly name: string;
 
   @Column({ unique: true })
-  username: string;
+  readonly username: string;
 
   @Column({ unique: true })
-  email: string;
+  readonly email: string;
 
   @Column()
-  password: string;
+  readonly password: string;
 
   @Column({ type: 'timestamptz', nullable: true })
-  verified_at: Date;
+  readonly verified_at: Date;
 
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
-  updated_at: Date;
+  readonly updated_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  created_at: Date;
+  readonly created_at: Date;
 }
