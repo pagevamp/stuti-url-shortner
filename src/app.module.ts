@@ -13,6 +13,8 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LogModule } from 'log/log.module';
+import { UrlAnalyticsModule } from 'url-analytics/url-analytics.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -46,6 +48,13 @@ import { LogModule } from 'log/log.module';
         },
       ],
     }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+      defaultJobOptions: { attempts: 3 },
+    }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(AppDataSourceOptions),
     UserModule,
@@ -53,6 +62,7 @@ import { LogModule } from 'log/log.module';
     AuthModule,
     LogModule,
     UrlModule,
+    UrlAnalyticsModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

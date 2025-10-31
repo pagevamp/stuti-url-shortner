@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { UrlService } from './url.service';
 import { ShortenUrlDto } from './dto/shorten-url.dto';
 import { AuthGuard } from 'auth/auth.guard';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
-import { ScheduledNotificationDto } from './dto/scheduled-notification.dto';
 
 @Controller('urls')
 export class UrlController {
@@ -20,8 +19,12 @@ export class UrlController {
   @UseGuards(AuthGuard)
   @Throttle({ default: { ttl: 1000, limit: 15 } })
   @Get(':shortUrl')
-  async getShortUrl(@Param('shortUrl') short_url: string, @Res() res: Response) {
-    const originalUrl = await this.urlService.getOriginalUrl(short_url);
+  async getShortUrl(
+    @Param('shortUrl') short_url: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const originalUrl = await this.urlService.getOriginalUrl(short_url, req);
     res.redirect(originalUrl);
   }
 }

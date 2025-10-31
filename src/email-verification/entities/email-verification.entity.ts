@@ -11,18 +11,18 @@ import { User } from '../../user/entities/user.entity';
 @Entity('email_verifications')
 export class EmailVerification {
   @PrimaryGeneratedColumn()
-  id: string;
+  readonly id: string;
 
   @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
   @Column({ unique: true })
-  token: string;
+  readonly token: string;
 
   @Column({ type: 'timestamptz' })
-  expires_at: Date;
+  readonly expires_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  created_at: Date;
+  readonly created_at: Date;
 }
