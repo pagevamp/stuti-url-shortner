@@ -21,12 +21,12 @@ export class Url {
 
   @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  readonly user: User;
+  user: User;
 
   @OneToMany(() => UrlAnalytics, (url_analytics) => url_analytics.url)
-  readonly url_analytics: Url[];
+  url_analytics: Url[];
 
-  @Column({type:'varchar', length:255})
+  @Column({ type: 'varchar', length: 255 })
   readonly original_url: string;
 
   @Column({ unique: true })

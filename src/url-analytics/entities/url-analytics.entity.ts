@@ -15,7 +15,7 @@ export class UrlAnalytics {
 
   @ManyToOne(() => Url, (url) => url.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'url_id', referencedColumnName: 'id' })
-  readonly url: Url;
+  url: Url;
 
   @Column({ nullable: true })
   readonly ip_address: string;

@@ -18,10 +18,10 @@ export class User {
   readonly id: string;
 
   @OneToMany(() => EmailVerification, (verification) => verification.user)
-  readonly emailVerifications: EmailVerification[];
+  emailVerifications: EmailVerification[];
 
   @OneToMany(() => Url, (url) => url.user)
-  readonly urls: Url[];
+  urls: Url[];
 
   @Column()
   readonly name: string;
@@ -36,10 +36,10 @@ export class User {
   readonly password: string;
 
   @Column({ type: 'timestamptz', nullable: true })
-  readonly verified_at: Date;
+  verified_at: Date;
 
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
-  readonly updated_at: Date;
+  updated_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
