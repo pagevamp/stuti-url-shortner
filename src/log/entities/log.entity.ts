@@ -2,18 +2,18 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 
 @Entity('logs')
 export class Log {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: number;
 
-  @Column()
-  context: string;
+  @Column({ type: 'varchar' })
+  readonly context: string;
 
   @Column({ type: 'text' })
-  message: string;
+  readonly message: string;
 
   @Column({ type: 'json', nullable: true })
-  metadata?: Record<string, any>;
+  readonly metadata?: Record<string, any>;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ type: 'timestamptz' })
+  readonly created_at: Date;
 }
