@@ -12,6 +12,7 @@ import { UrlModule } from 'url/url.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
+import { LogModule } from 'log/log.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     UserModule,
     EmailVerificationModule,
     AuthModule,
+    LogModule,
     UrlModule,
   ],
   controllers: [],
