@@ -87,7 +87,8 @@ export class UrlService {
         );
 
         url.notified = true;
-        this.urlRepo.save(url);
+        
+        await this.urlRepo.save(url);
         this.logger.log(`Sent expiration email to ${url.user.email}`);
         
       } catch (err) {
