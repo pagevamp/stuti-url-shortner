@@ -29,7 +29,7 @@ export class Url {
   @Column({ type: 'varchar', length: 255 })
   readonly original_url: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   readonly short_url: string;
 
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
@@ -38,7 +38,7 @@ export class Url {
   @Column({ type: 'timestamptz', nullable: true })
   readonly expires_at: Date;
 
-  @Column({ default: false })
+  @Column({ default: false, type:'boolean' })
   notified: boolean;
 
   @CreateDateColumn({ type: 'timestamptz' })

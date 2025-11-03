@@ -17,7 +17,7 @@ export class EmailVerification {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   readonly token: string;
 
   @Column({ type: 'timestamptz' })

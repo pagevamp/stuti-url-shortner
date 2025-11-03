@@ -23,16 +23,16 @@ export class User {
   @OneToMany(() => Url, (url) => url.user)
   urls: Url[];
 
-  @Column()
+  @Column({ type: 'varchar' })
   readonly name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   readonly username: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   readonly email: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   readonly password: string;
 
   @Column({ type: 'timestamptz', nullable: true })
