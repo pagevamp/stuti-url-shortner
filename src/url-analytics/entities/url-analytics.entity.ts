@@ -17,23 +17,23 @@ export class UrlAnalytics {
   @JoinColumn({ name: 'url_id', referencedColumnName: 'id' })
   url: Url;
 
-  @Column({ nullable: true })
-  readonly ip_address?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  readonly ip_address?: string |null;
 
-  @Column({ nullable: true })
-  readonly country?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  readonly country?: string |null;
 
-  @Column({ nullable: true })
-  readonly user_agent?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  readonly user_agent?: string |null;
 
-  @Column({ nullable: true })
-  readonly browser?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  readonly browser?: string |null;
 
-  @Column({ nullable: true })
-  readonly os?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  readonly os?: string |null;
 
-  @Column({ nullable: true })
-  readonly device?: string;
+  @Column({ nullable: true, type: 'varchar' })
+  readonly device?: string |null;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   readonly clicked_at?: Date | null;

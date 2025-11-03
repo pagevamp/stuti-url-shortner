@@ -30,15 +30,15 @@ export class UrlAnalyticsProcessor extends WorkerHost {
       const record = this.urlAnalyticsRepo.create({
         url: { id: url_id },
         ip_address: ip_address ?? null,
-        country: geo?.country ?? undefined,
+        country: geo?.country ?? null,
         user_agent: user_agent ?? null,
-        browser: userAgentResult.browser?.name ?? undefined,
-        os: userAgentResult.os?.name ?? undefined,
+        browser: userAgentResult.browser?.name ?? null,
+        os: userAgentResult.os?.name ?? null,
         device:
           userAgentResult.device?.model ||
           userAgentResult.device?.type ||
           userAgentResult.device?.vendor ||
-          undefined,
+          null,
       });
 
       await this.urlAnalyticsRepo.save(record);
@@ -48,7 +48,7 @@ export class UrlAnalyticsProcessor extends WorkerHost {
         url_id,
         ip_address,
         user_agent,
-        country: geo?.country ?? undefined,
+        country: geo?.country ?? null,
         browser: userAgentResult.browser?.name,
         os: userAgentResult.os?.name,
         device:
