@@ -5,7 +5,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from 'user/entities/user.entity';
@@ -16,11 +15,11 @@ export class Url {
     Object.assign(this, url);
   }
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  readonly id: string;
 
   @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: User;
+  readonly user: User;
 
   @Column({ nullable: false, type: 'varchar' })
   original_url: string;
@@ -34,9 +33,9 @@ export class Url {
   @Column({ type: 'timestamptz', nullable: true })
   expires_at?: Date | null;
 
-  @Column({ default: false })
+  @Column({ default: false, type: 'boolean' })
   notified: boolean;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  created_at: Date;
+  readonly created_at: Date;
 }
