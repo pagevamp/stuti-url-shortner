@@ -14,6 +14,6 @@ export class Log {
   @Column({ type: 'json', nullable: true })
   readonly metadata?: Record<string, any>;
 
-  @CreateDateColumn({ type: 'timestamptz', nullable: true })
-  readonly created_at?: Date | null;
+  @CreateDateColumn({ type: 'timestamptz' })
+  readonly created_at: Date;
 }

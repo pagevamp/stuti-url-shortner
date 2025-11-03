@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UrlAnalytics } from './entities/url-analytics.entity';

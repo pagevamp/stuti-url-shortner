@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EmailVerification } from 'email-verification/entities/email-verification.entity';
+import { EmailVerifications } from 'email-verification/entities/email-verification.entity';
 import { Repository } from 'typeorm';
 import { User } from 'user/entities/user.entity';
 import { UserService } from 'user/user.service';
@@ -12,8 +12,8 @@ import { HashService } from 'user/hash.service';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(EmailVerification)
-    private readonly emailVerificationRepo: Repository<EmailVerification>,
+    @InjectRepository(EmailVerifications)
+    private readonly emailVerificationRepo: Repository<EmailVerifications>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly userService: UserService,

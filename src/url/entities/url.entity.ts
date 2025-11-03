@@ -19,7 +19,7 @@ export class Url {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.id, {onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
@@ -41,6 +41,6 @@ export class Url {
   @Column({ default: false, type: 'boolean' })
   notified: boolean;
 
-  @CreateDateColumn({ type: 'timestamptz', nullable: true })
-  readonly created_at?: Date | null;
+  @CreateDateColumn({ type: 'timestamptz' })
+  readonly created_at: Date ;
 }

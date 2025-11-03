@@ -13,7 +13,7 @@ export class UrlAnalytics {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => Url, (url) => url.id, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Url, (url) => url.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'url_id', referencedColumnName: 'id' })
   url: Url;
 
@@ -35,6 +35,6 @@ export class UrlAnalytics {
   @Column({ nullable: true, type: 'varchar' })
   readonly device?: string | null;
 
-  @CreateDateColumn({ type: 'timestamptz', nullable: true })
-  readonly clicked_at?: Date | null;
+  @CreateDateColumn({ type: 'timestamptz' })
+  readonly clicked_at: Date ;
 }

@@ -74,7 +74,7 @@ export class UrlService {
         await this.mailService.sendMail(url.user.email, {
           template: 'url-expired',
           from: this.configService.get('EMAIL_USER'),
-          to: url.user.email ?? null,
+          to: url.user.email,
           subject: `Your short url has expired`,
           project: '.SUS',
           url: url.original_url ?? null,
@@ -85,10 +85,10 @@ export class UrlService {
           UrlService.name,
           `Sent expiration email to ${url.user.email}`,
           {
-            urlId: url.id ?? null,
-            email: url.user.email ?? null,
-            user: url.user.username ?? null,
-            expiredAt: url.expires_at ?? null,
+            urlId: url.id,
+            email: url.user.email,
+            user: url.user.username,
+            expiredAt: url.expires_at,
           },
         );
 

@@ -15,6 +15,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { LogModule } from 'log/log.module';
 import { UrlAnalyticsModule } from 'url-analytics/url-analytics.module';
 import { BullModule } from '@nestjs/bullmq';
+import { MailModule } from 'utils/mail.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -51,7 +53,7 @@ import { BullModule } from '@nestjs/bullmq';
     BullModule.forRoot({
       connection: {
         host: 'localhost',
-        port: Number(process.env.REDIS_PORT),
+        port: Number(process.env.REDIS_PORT) || 6379,
       },
       defaultJobOptions: { attempts: 3 },
     }),
@@ -61,6 +63,7 @@ import { BullModule } from '@nestjs/bullmq';
     EmailVerificationModule,
     AuthModule,
     LogModule,
+    MailModule,
     UrlModule,
     UrlAnalyticsModule,
   ],
