@@ -7,7 +7,7 @@ export class Logs1761797465311 implements MigrationInterface {
         "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),        
         "context" VARCHAR(255),
         "message" VARCHAR(255),
-        "metadata" JSON,
+        "metadata" JSONB,
         "created_at" timestamptz NOT NULL DEFAULT now()       
         );`,
     );
