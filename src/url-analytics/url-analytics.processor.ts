@@ -18,39 +18,45 @@ export class UrlAnalyticsProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: any) {
-    const { url_id, ip_address, user_agent } = job.data;
-    
-    const parser = new UAParser(user_agent || '');
-    const userAgentResult = parser.getResult();
-    const geo = geoip.lookup(ip_address);
+  async process(job: Job) {
+    try {
+      const { url_id, ip_address, user_agent } = job.data;
 
-    const record = this.urlAnalyticsRepo.create({
-      url: { id: url_id },
-      ip_address: ip_address,
-      user_agent: user_agent,
-      browser: userAgentResult.browser?.name,
-      os: userAgentResult.os?.name,
-      device:
-        userAgentResult.device?.model ||
-        userAgentResult.device?.type ||
-        userAgentResult.device?.vendor,
-      country: geo.country,
-    });
+      const parser = new UAParser(user_agent || '');
+      const userAgentResult = parser.getResult();
+      const geo = geoip.lookup(ip_address);
 
-    await this.urlAnalyticsRepo.save(record);
+      const record = this.urlAnalyticsRepo.create({
+        url: { id: url_id },
+        ip_address: ip_address ?? null,
+        country: geo?.country ?? undefined,
+        user_agent: user_agent ?? null,
+        browser: userAgentResult.browser?.name ?? undefined,
+        os: userAgentResult.os?.name ?? undefined,
+        device:
+          userAgentResult.device?.model ||
+          userAgentResult.device?.type ||
+          userAgentResult.device?.vendor ||
+          undefined,
+      });
 
-    this.logger.log(`Saved analytics for ${ip_address}`);
-    this.logger.debug({
-      url_id,
-      ip_address,
-      user_agent,
-      browser: userAgentResult.browser?.name,
-      os: userAgentResult.os?.name,
-      device:
-        userAgentResult.device?.model ||
-        userAgentResult.device?.type ||
-        userAgentResult.device?.vendor,
-    });
+      await this.urlAnalyticsRepo.save(record);
+
+      this.logger.log(`Saved analytics for ${ip_address}`);
+      this.logger.debug({
+        url_id,
+        ip_address,
+        user_agent,
+        country: geo?.country ?? undefined,
+        browser: userAgentResult.browser?.name,
+        os: userAgentResult.os?.name,
+        device:
+          userAgentResult.device?.model ||
+          userAgentResult.device?.type ||
+          userAgentResult.device?.vendor,
+      });
+    } catch (err) {
+      this.logger.error(`Failed to process the job due to: ${err.message}`);
+    }
   }
 }

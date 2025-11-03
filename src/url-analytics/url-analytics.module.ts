@@ -11,6 +11,7 @@ import { LogService } from 'log/log.service';
 import { ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { UrlAnalyticsProcessor } from './url-analytics.processor';
+import { UrlAnalyticsController } from './url-analytics.controller';
 
 @Module({
   imports: [
@@ -26,5 +27,6 @@ import { UrlAnalyticsProcessor } from './url-analytics.processor';
     LogService,
     UrlAnalyticsProcessor,
   ],
+  controllers: [UrlAnalyticsController],
 })
 export class UrlAnalyticsModule {}
