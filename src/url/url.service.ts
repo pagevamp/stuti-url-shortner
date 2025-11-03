@@ -71,8 +71,8 @@ export class UrlService {
           to: url.user.email,
           subject: `Your short url has expired`,
           project: '.SUS',
-          url: url.original_url,
-          expiresAt: url.expires_at.toUTCString(),
+          url: url?.original_url,
+          expiresAt: url.expires_at?.toUTCString() || null,
         });
 
         await this.logService.createLog(

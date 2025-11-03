@@ -28,7 +28,7 @@ export class MailService {
       subject: string;
       to: string;
       url?: string;
-      expiresAt: string;
+      expiresAt?: string | null;
     },
   ) {
     const templatePath = path.join(__dirname, '..', 'config', `${data.template}.hbs`);

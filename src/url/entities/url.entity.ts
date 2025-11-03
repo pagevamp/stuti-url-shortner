@@ -22,20 +22,20 @@ export class Url {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
-  @Column()
+  @Column({ nullable: false, type: 'varchar' })
   original_url: string;
 
-  @Column({ unique: true })
-  short_url: string;
+  @Column({ unique: true, type: 'varchar' })
+  short_url?: string | null;
 
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-  deleted_at: Date;
+  deleted_at?: Date | null;
 
   @Column({ type: 'timestamptz', nullable: true })
-  expires_at: Date;
+  expires_at?: Date | null;
 
-  @Column({default:false})
-  notified : boolean
+  @Column({ default: false })
+  notified: boolean;
 
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
