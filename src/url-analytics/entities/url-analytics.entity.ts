@@ -18,23 +18,23 @@ export class UrlAnalytics {
   url: Url;
 
   @Column({ nullable: true })
-  readonly ip_address: string;
+  readonly ip_address?: string;
 
   @Column({ nullable: true })
-  readonly country: string;
+  readonly country?: string;
 
   @Column({ nullable: true })
-  readonly user_agent: string;
+  readonly user_agent?: string;
 
   @Column({ nullable: true })
-  readonly browser: string;
+  readonly browser?: string;
 
   @Column({ nullable: true })
-  readonly os: string;
+  readonly os?: string;
 
   @Column({ nullable: true })
-  readonly device: string;
+  readonly device?: string;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
-  readonly clicked_at: Date;
+  readonly clicked_at?: Date | null;
 }
