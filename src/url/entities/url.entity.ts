@@ -29,18 +29,18 @@ export class Url {
   @Column({ type: 'varchar', length: 255 })
   readonly original_url: string;
 
-  @Column({ unique: true })
-  readonly short_url: string;
+  @Column({ unique: true, nullable: true, type: 'varchar' })
+  readonly short_url?: string | null;
 
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-  readonly deleted_at: Date | null;
+  readonly deleted_at?: Date | null;
 
   @Column({ type: 'timestamptz', nullable: true })
-  readonly expires_at: Date;
+  readonly expires_at?: Date | null;
 
-  @Column({ default: false })
+  @Column({ default: false, type: 'boolean' })
   notified: boolean;
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  readonly created_at: Date;
+  @CreateDateColumn({ type: 'timestamptz', nullable: true })
+  readonly created_at?: Date | null;
 }

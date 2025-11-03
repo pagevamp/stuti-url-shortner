@@ -1,6 +1,6 @@
 import { EnvConfig } from './config/env.validation';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSourceOptions } from 'config/data-source';
 import { UserModule } from 'user/user.module';
@@ -51,7 +51,7 @@ import { BullModule } from '@nestjs/bullmq';
     BullModule.forRoot({
       connection: {
         host: 'localhost',
-        port: 6379,
+        port: Number(process.env.REDIS_PORT),
       },
       defaultJobOptions: { attempts: 3 },
     }),

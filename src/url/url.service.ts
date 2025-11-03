@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { Url } from './entities/url.entity';
@@ -49,7 +49,7 @@ export class UrlService {
 
   async getOriginalUrl(short_url: string, req: Request) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
-    if (!url) throw new Error('Could not find the provided Short Url');
+    if (!url) throw new NotFoundException('Could not find the provided Short Url');
 
     await this.analyticsService.analytics(req, url.id);
 
@@ -74,26 +74,26 @@ export class UrlService {
         await this.mailService.sendMail(url.user.email, {
           template: 'url-expired',
           from: this.configService.get('EMAIL_USER'),
-          to: url.user.email,
+          to: url.user.email ?? null,
           subject: `Your short url has expired`,
           project: '.SUS',
-          url: url.original_url,
-          expiresAt: url.expires_at.toUTCString(),
+          url: url.original_url ?? null,
+          expiresAt: url.expires_at?.toUTCString(),
         });
 
         await this.logService.createLog(
           UrlService.name,
           `Sent expiration email to ${url.user.email}`,
           {
-            urlId: url.id,
-            email: url.user.email,
-            user: url.user.username,
-            expiredAt: url.expires_at,
+            urlId: url.id ?? null,
+            email: url.user.email ?? null,
+            user: url.user.username ?? null,
+            expiredAt: url.expires_at ?? null,
           },
         );
 
         url.notified = true;
-        
+
         await this.urlRepo.save(url);
         this.logger.log(`Sent expiration email to ${url.user.email}`);
       } catch (err) {

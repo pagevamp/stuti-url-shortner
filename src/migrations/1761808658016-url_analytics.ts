@@ -5,7 +5,7 @@ export class UrlAnalytics1761808658016 implements MigrationInterface {
     await queryRunner.query(
       `CREATE TABLE IF NOT EXISTS "url_analytics" (
            "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),       
-           "url_id" uuid ,
+           "url_id" uuid NOT NULL,
            "ip_address" VARCHAR,
            "country" VARCHAR(255),
            "user_agent" VARCHAR(255),

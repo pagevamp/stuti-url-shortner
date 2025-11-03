@@ -22,6 +22,10 @@ export class EnvConfig {
   @IsNumber()
   PORT: number;
 
+  @Type(() => Number)
+  @IsNumber()
+  REDIS_PORT: number;
+
   @IsString()
   JWT_SECRET: string;
 

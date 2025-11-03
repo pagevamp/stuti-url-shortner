@@ -18,22 +18,22 @@ export class UrlAnalytics {
   url: Url;
 
   @Column({ nullable: true, type: 'varchar' })
-  readonly ip_address?: string |null;
+  readonly ip_address?: string | null;
 
   @Column({ nullable: true, type: 'varchar' })
-  readonly country?: string |null;
+  readonly country?: string | null;
 
   @Column({ nullable: true, type: 'varchar' })
-  readonly user_agent?: string |null;
+  readonly user_agent?: string | null;
 
   @Column({ nullable: true, type: 'varchar' })
-  readonly browser?: string |null;
+  readonly browser?: string | null;
 
   @Column({ nullable: true, type: 'varchar' })
-  readonly os?: string |null;
+  readonly os?: string | null;
 
   @Column({ nullable: true, type: 'varchar' })
-  readonly device?: string |null;
+  readonly device?: string | null;
 
   @CreateDateColumn({ type: 'timestamptz', nullable: true })
   readonly clicked_at?: Date | null;
