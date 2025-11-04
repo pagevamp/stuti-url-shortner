@@ -22,7 +22,7 @@ export class MailService {
 
   async sendMail(to: string, data: MailData) {
     const templatePath = path.join(__dirname, '..', 'config', `${data.template}.hbs`);
-    const source = fs.readFile(templatePath, 'utf8');
+    const source = await fs.readFile(templatePath, 'utf8');
     const template = Handlebars.compile(source);
     const html = template(data);
 
