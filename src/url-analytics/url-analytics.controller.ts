@@ -2,7 +2,7 @@ import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { UrlAnalyticsService } from './url-analytics.service';
 import { AnalyticsFilterDto } from './dto/analytics-filter.dto';
 
-@Controller('url_analytics')
+@Controller('url-analytics')
 export class UrlAnalyticsController {
   constructor(private readonly urlAnalyticsService: UrlAnalyticsService) {}
 
