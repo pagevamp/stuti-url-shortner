@@ -31,7 +31,6 @@ import { LogModule } from 'log/log.module';
     JwtModule
   ],
   providers: [
-    HashService,
     UrlService,
   ],
   controllers: [UrlController],
