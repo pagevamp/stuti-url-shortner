@@ -44,16 +44,14 @@ export class UrlService {
 
   async getOriginalUrl(short_url: string) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
-    if (!url) throw new Error('Could not find the provided Short Url');
+    if (!url) {
+      throw new Error('Could not find the provided Short Url');
+    }
     return url.original_url;
   }
 
-
-  private async sendMailRecursive(
-    expiredUrls : Url[],
-    index = 0,
-  ):Promise<void>{
-    if (index >= expiredUrls.length ){
+  private async sendMailRecursive(expiredUrls: Url[], index = 0): Promise<void> {
+    if (index >= expiredUrls.length) {
       this.logger.log('All expired URLs have been processed');
       return;
     }
@@ -61,29 +59,26 @@ export class UrlService {
     const url = expiredUrls[index];
 
     try {
-        await this.mailService.sendMail(url.user.email, {
-          template: 'url-expired',
-          from: this.configService.get('EMAIL_USER'),
-          to: url.user.email,
-          subject: `Your short url has expired`,
-          project: '.SUS',
-          url: url.original_url,
-          expiresAt: url.expires_at.toUTCString(),
-        });
+      await this.mailService.sendMail(url.user.email, {
+        template: 'url-expired',
+        from: this.configService.get('EMAIL_USER'),
+        to: url.user.email,
+        subject: `Your short url has expired`,
+        project: '.SUS',
+        url: url.original_url,
+        expiresAt: url.expires_at.toUTCString(),
+      });
 
-        url.notified = true;
-        
-        await this.urlRepo.save(url);
-        this.logger.log(`Sent expiration email to ${url.user.email}`);
-      } catch(err) {
-        this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
-      }
+      url.notified = true;
 
+      await this.urlRepo.save(url);
+      this.logger.log(`Sent expiration email to ${url.user.email}`);
+    } catch (err) {
+      this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
+    }
 
-  await this.sendMailRecursive(expiredUrls, index + 1);
-
+    await this.sendMailRecursive(expiredUrls, index + 1);
   }
-
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async scheduledNotification() {
