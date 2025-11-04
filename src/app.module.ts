@@ -1,6 +1,6 @@
 import { EnvConfig } from './config/env.validation';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSourceOptions } from 'config/data-source';
 import { UserModule } from 'user/user.module';
@@ -15,6 +15,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { LogModule } from 'log/log.module';
 import { UrlAnalyticsModule } from 'url-analytics/url-analytics.module';
 import { BullModule } from '@nestjs/bullmq';
+import { MailModule } from 'utils/mail.module';
 
 @Module({
   imports: [
@@ -48,12 +49,16 @@ import { BullModule } from '@nestjs/bullmq';
         },
       ],
     }),
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-      defaultJobOptions: { attempts: 3 },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT') || 6379,
+        },
+        defaultJobOptions: { attempts: 3 },
+      }),
+      inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(AppDataSourceOptions),
@@ -61,6 +66,7 @@ import { BullModule } from '@nestjs/bullmq';
     EmailVerificationModule,
     AuthModule,
     LogModule,
+    MailModule,
     UrlModule,
     UrlAnalyticsModule,
   ],

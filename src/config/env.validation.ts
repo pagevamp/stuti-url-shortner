@@ -5,6 +5,9 @@ export class EnvConfig {
   @IsString()
   DB_HOST: string;
 
+  @IsString()
+  REDIS_HOST: string;
+
   @Type(() => Number)
   @IsNumber()
   DB_PORT: number;
@@ -21,6 +24,10 @@ export class EnvConfig {
   @Type(() => Number)
   @IsNumber()
   PORT: number;
+
+  @Type(() => Number)
+  @IsNumber()
+  REDIS_PORT: number;
 
   @IsString()
   JWT_SECRET: string;

@@ -11,7 +11,7 @@ export class LogService {
     private readonly logRepo: Repository<Log>,
   ) {}
 
-  async createLog(context: string, message: string, metadata?: Record<string, any>) {
+  async createLog(context?: string, message?: string, metadata?: Record<string, any>) {
     await this.logRepo.save({ context, message, metadata });
   }
 

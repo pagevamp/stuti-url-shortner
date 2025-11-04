@@ -5,13 +5,13 @@ export class Log {
   @PrimaryGeneratedColumn('uuid')
   readonly id: number;
 
-  @Column({ type: 'varchar' })
-  readonly context: string;
+  @Column({ type: 'varchar', nullable: true })
+  readonly context?: string | null;
 
-  @Column({ type: 'text' })
-  readonly message: string;
+  @Column({ type: 'text', nullable: true })
+  readonly message?: string | null;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: 'jsonb', nullable: true })
   readonly metadata?: Record<string, any>;
 
   @CreateDateColumn({ type: 'timestamptz' })

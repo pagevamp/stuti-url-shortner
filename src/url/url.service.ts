@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { Url } from './entities/url.entity';
@@ -24,16 +24,24 @@ export class UrlService {
     private readonly analyticsService: UrlAnalyticsService,
   ) {}
 
-  async shortenUrl(user_id: string, original_url: string) {
-    let short_url: string;
+  private async generateShortUrl(limit: number = 10, currentRecursion:number =0): Promise<string> {
+    if (currentRecursion >= limit) {
+      return 'The recursive loop has reached its limits';
+    }
+    
+    const short_url = nanoid();
+    const existing = await this.urlRepo.findOne({ where: { short_url } });
 
-    do {
-      short_url = nanoid();
-    } while (await this.urlRepo.findOne({ where: { short_url } }));
+    if (existing) {
+      this.logger.warn(`Duplicate short URL found (${short_url})`);
+      return this.generateShortUrl(limit, currentRecursion + 1);
+    }
 
-    const expires_at = new Date(
-      Date.now() + Number(this.configService.get('URL_EXPIRATION_TIME')) * 1000,
-    );
+    return short_url;
+  }
+
+  async shortenUrl(user_id: string, original_url: string, expires_at: Date) {
+    const short_url = await this.generateShortUrl();
 
     const url = this.urlRepo.create({
       original_url,
@@ -49,7 +57,9 @@ export class UrlService {
 
   async getOriginalUrl(short_url: string, req: Request) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
-    if (!url) throw new Error('Could not find the provided Short Url');
+    if (!url) {
+      throw new NotFoundException('Could not find the provided Short Url');
+    }
 
     await this.analyticsService.analytics(req, url.id);
 
@@ -64,7 +74,7 @@ export class UrlService {
       relations: ['user'],
     });
 
-    if (expiredUrls.length === 0) {
+    if (!expiredUrls.length) {
       this.logger.log('No expired URLs found at this time range');
       return;
     }
@@ -77,8 +87,8 @@ export class UrlService {
           to: url.user.email,
           subject: `Your short url has expired`,
           project: '.SUS',
-          url: url.original_url,
-          expiresAt: url.expires_at.toUTCString(),
+          url: url.original_url ?? null,
+          expiresAt: url.expires_at?.toUTCString(),
         });
 
         await this.logService.createLog(

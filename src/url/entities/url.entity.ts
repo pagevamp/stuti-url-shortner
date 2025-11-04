@@ -19,13 +19,6 @@ export class Url {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: User;
-
-  @OneToMany(() => UrlAnalytics, (url_analytics) => url_analytics.url)
-  url_analytics: Url[];
-
   @Column({ type: 'varchar', length: 255 })
   readonly original_url: string;
 
@@ -33,14 +26,21 @@ export class Url {
   readonly short_url: string;
 
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-  readonly deleted_at: Date | null;
+  readonly deleted_at?: Date | null;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ type: 'timestamptz'})
   readonly expires_at: Date;
 
-  @Column({ default: false, type:'boolean' })
-  notified: boolean;
+  @Column({ default: false, type: 'boolean' })
+  notified: boolean; // to identify if a url has expired
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
+
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user: User;
+
+  @OneToMany(() => UrlAnalytics, (url_analytics) => url_analytics.url)
+  url_analytics: Url[];
 }

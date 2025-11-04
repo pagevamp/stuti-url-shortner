@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { UrlAnalyticsService } from './url-analytics.service';
 import { AnalyticsFilterDto } from './dto/analytics-filter.dto';
 
@@ -6,6 +6,7 @@ import { AnalyticsFilterDto } from './dto/analytics-filter.dto';
 export class UrlAnalyticsController {
   constructor(private readonly urlAnalyticsService: UrlAnalyticsService) {}
 
+  @HttpCode(HttpStatus.PARTIAL_CONTENT)
   @Get()
   async filter(@Query() dto: AnalyticsFilterDto) {
     const filter = Object.values(dto).some((val) => val !== undefined && val !== null);

@@ -25,6 +25,10 @@ export class UrlAnalyticsService {
       url_id: urlId,
       ip_address: userIp,
       user_agent: userAgent,
+    }, {
+      attempts : 3,
+      removeOnComplete : 100,
+      removeOnFail : 100,
     });
   }
 
