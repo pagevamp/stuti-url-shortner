@@ -20,10 +20,7 @@ export class MailService {
     });
   }
 
-  async sendMail(
-    to: string,
-    data : MailData
-  ) {
+  async sendMail(to: string, data: MailData) {
     const templatePath = path.join(__dirname, '..', 'config', `${data.template}.hbs`);
     const source = fs.readFileSync(templatePath, 'utf8');
     const template = Handlebars.compile(source);

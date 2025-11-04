@@ -19,12 +19,20 @@ export class UrlService {
     private readonly mailService: MailService,
   ) {}
 
-  async shortenUrl(user_id: string, original_url: string) {
-    let short_url: string;
+  private async generateShortUrl(): Promise<string> {
+    const short_url = nanoid();
+    const existing = await this.urlRepo.findOne({ where: { short_url } });
 
-    do {
-      short_url = nanoid();
-    } while (await this.urlRepo.findOne({ where: { short_url } }));
+    if (existing) {
+      this.logger.warn(`Duplicate short URL found (${short_url})`);
+      return this.generateShortUrl();
+    }
+
+    return short_url;
+  }
+
+  async shortenUrl(user_id: string, original_url: string) {
+    const short_url = await this.generateShortUrl();
 
     const expires_at = new Date(
       Date.now() + Number(this.configService.get('URL_EXPIRATION_TIME')) * 1000,
@@ -44,40 +52,8 @@ export class UrlService {
 
   async getOriginalUrl(short_url: string) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
-    if (!url) {
-      throw new Error('Could not find the provided Short Url');
-    }
+    if (!url) throw new Error('Could not find the provided Short Url');
     return url.original_url;
-  }
-
-  private async sendMailRecursive(expiredUrls: Url[], index = 0): Promise<void> {
-    if (index >= expiredUrls.length) {
-      this.logger.log('All expired URLs have been processed');
-      return;
-    }
-
-    const url = expiredUrls[index];
-
-    try {
-      await this.mailService.sendMail(url.user.email, {
-        template: 'url-expired',
-        from: this.configService.get('EMAIL_USER'),
-        to: url.user.email,
-        subject: `Your short url has expired`,
-        project: '.SUS',
-        url: url.original_url,
-        expiresAt: url.expires_at.toUTCString(),
-      });
-
-      url.notified = true;
-
-      await this.urlRepo.save(url);
-      this.logger.log(`Sent expiration email to ${url.user.email}`);
-    } catch (err) {
-      this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
-    }
-
-    await this.sendMailRecursive(expiredUrls, index + 1);
   }
 
   @Cron(CronExpression.EVERY_10_SECONDS)
@@ -93,7 +69,25 @@ export class UrlService {
       return;
     }
 
-    this.logger.log(`Found ${expiredUrls.length} expired URLs to notify`);
-    await this.sendMailRecursive(expiredUrls);
+    for (const url of expiredUrls) {
+      try {
+        await this.mailService.sendMail(url.user.email, {
+          template: 'url-expired',
+          from: this.configService.get('EMAIL_USER'),
+          to: url.user.email,
+          subject: `Your short url has expired`,
+          project: '.SUS',
+          url: url.original_url,
+          expiresAt: url.expires_at.toUTCString(),
+        });
+
+        url.notified = true;
+
+        await this.urlRepo.save(url);
+        this.logger.log(`Sent expiration email to ${url.user.email}`);
+      } catch (err) {
+        this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
+      }
+    }
   }
 }
