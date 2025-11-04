@@ -48,21 +48,19 @@ export class UrlService {
     return url.original_url;
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  async scheduledNotification() {
-    const now = new Date();
-    const expiredUrls = await this.urlRepo.find({
-      where: { expires_at: LessThanOrEqual(now), notified: false },
-      relations: ['user'],
-    });
 
-    if (expiredUrls.length === 0) {
-      this.logger.log('No expired URLs found at this time range');
+  private async sendMailRecursive(
+    expiredUrls : Url[],
+    index = 0,
+  ):Promise<void>{
+    if (index >= expiredUrls.length ){
+      this.logger.log('All expired URLs have been processed');
       return;
     }
 
-    for (const url of expiredUrls) {
-      try {
+    const url = expiredUrls[index];
+
+    try {
         await this.mailService.sendMail(url.user.email, {
           template: 'url-expired',
           from: this.configService.get('EMAIL_USER'),
@@ -80,6 +78,27 @@ export class UrlService {
       } catch(err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
       }
+
+
+  await this.sendMailRecursive(expiredUrls, index + 1);
+
+  }
+
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async scheduledNotification() {
+    const now = new Date();
+    const expiredUrls = await this.urlRepo.find({
+      where: { expires_at: LessThanOrEqual(now), notified: false },
+      relations: ['user'],
+    });
+
+    if (expiredUrls.length === 0) {
+      this.logger.log('No expired URLs found at this time range');
+      return;
     }
+
+    this.logger.log(`Found ${expiredUrls.length} expired URLs to notify`);
+    await this.sendMailRecursive(expiredUrls);
   }
 }
