@@ -36,7 +36,7 @@ export class User {
   readonly password: string;
 
   @Column({ type: 'timestamptz', nullable: true })
-  verified_at: Date;
+  verified_at?: Date | null;
 
   @UpdateDateColumn({ type: 'timestamptz', nullable: true })
   updated_at: Date;

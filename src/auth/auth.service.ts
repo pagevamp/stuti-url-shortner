@@ -32,6 +32,12 @@ export class AuthService {
       throw new UnauthorizedException('The password does not match!');
     }
 
+    const verifiedUser = await this.userRepo.findOne({ where: { username } });
+
+    if (verifiedUser?.verified_at === null) {
+      throw new UnauthorizedException('This user has not been verified!');
+    }
+
     const payload = { sub: user.id, username: user.username };
     return {
       access_token: await this.jwtService.signAsync(payload, {
@@ -44,6 +50,12 @@ export class AuthService {
   public async sendEmail(email: string) {
     const user = await this.userRepo.findOneBy({ email });
     if (!user) throw new Error('User not found');
+
+    const verifiedUser = await this.userRepo.findOne({ where: { email } });
+
+    if (verifiedUser?.verified_at) {
+      throw new UnauthorizedException('This user has already been verified!');
+    }
 
     const expires_at = new Date(
       Date.now() + Number(this.configService.get('JWT_EXPIRATION_TIME')) * 1000,
@@ -65,7 +77,7 @@ export class AuthService {
       to: email,
       subject: `Verify Your Email Address`,
       project: '.SUS',
-      url,
+      url: url,
       expiresAt: expires_at.toUTCString(),
     });
 
