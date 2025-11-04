@@ -17,10 +17,6 @@ export class Url {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  readonly user: User;
-
   @Column({ type: 'varchar' })
   readonly original_url: string;
 
@@ -28,9 +24,9 @@ export class Url {
   readonly short_url: string;
 
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-  readonly deleted_at?: Date | null;
+  readonly deleted_at: Date;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ type: 'timestamptz'})
   readonly expires_at: Date;
 
   @Column({ default: false, type: 'boolean' })
@@ -38,4 +34,8 @@ export class Url {
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
+
+  @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  readonly user: User;
 }

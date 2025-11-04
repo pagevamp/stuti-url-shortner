@@ -3,18 +3,14 @@ import { Url } from './entities/url.entity';
 import { UrlService } from './url.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UrlController } from './url.controller';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from 'auth/auth.guard';
-import { User } from 'user/entities/user.entity';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { MailService } from 'utils/mail.service';
-import { UserService } from 'user/user.service';
-import { HashService } from 'user/hash.service';
+import { ConfigModule } from '@nestjs/config';
+import { MailModule } from 'utils/mail.module';
+import { AuthModule } from 'auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Url, User])],
-  providers: [UrlService, ConfigService, JwtService, MailService, UserService, HashService],
+  imports: [TypeOrmModule.forFeature([Url]), MailModule, ConfigModule, AuthModule, JwtModule],
+  providers: [UrlService],
   controllers: [UrlController],
 })
 export class UrlModule {}
