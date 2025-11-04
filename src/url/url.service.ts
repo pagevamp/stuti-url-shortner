@@ -32,7 +32,7 @@ export class UrlService {
 
     if (existing) {
       this.logger.warn(`Duplicate short URL found (${short_url})`);
-      return this.generateShortUrl(currentRecursion + 1);
+      return this.generateShortUrl(limit, currentRecursion + 1);
     }
 
     return short_url;
