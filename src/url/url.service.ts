@@ -24,13 +24,13 @@ export class UrlService {
     private readonly analyticsService: UrlAnalyticsService,
   ) {}
 
-  private async generateShortUrl(): Promise<string> {
+  private async generateShortUrl(limit: number = 10): Promise<string> {
     const short_url = nanoid();
     const existing = await this.urlRepo.findOne({ where: { short_url } });
 
     if (existing) {
       this.logger.warn(`Duplicate short URL found (${short_url})`);
-      return this.generateShortUrl();
+      return this.generateShortUrl(limit + 1);
     }
 
     return short_url;
@@ -38,7 +38,6 @@ export class UrlService {
 
   async shortenUrl(user_id: string, original_url: string, expires_at: Date) {
     const short_url = await this.generateShortUrl();
-
 
     const url = this.urlRepo.create({
       original_url,
@@ -71,7 +70,7 @@ export class UrlService {
       relations: ['user'],
     });
 
-    if (expiredUrls.length === 0) {
+    if (!expiredUrls.length) {
       this.logger.log('No expired URLs found at this time range');
       return;
     }

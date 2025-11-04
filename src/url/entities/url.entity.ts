@@ -26,10 +26,10 @@ export class Url {
   readonly short_url: string;
 
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-  readonly deleted_at?: Date | null;
+  readonly deleted_at: Date;
 
-  @Column({ type: 'timestamptz', nullable: true })
-  readonly expires_at?: Date | null;
+  @Column({ type: 'timestamptz'})
+  readonly expires_at: Date;
 
   @Column({ default: false, type: 'boolean' })
   notified: boolean; // to identify if a url has expired

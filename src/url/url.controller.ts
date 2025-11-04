@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { UrlService } from './url.service';
 import { ShortenUrlDto } from './dto/shorten-url.dto';
 import { AuthGuard } from 'auth/auth.guard';
@@ -10,6 +21,7 @@ export class UrlController {
   constructor(private readonly urlService: UrlService) {}
 
   @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   async shorten(@Body() dto: ShortenUrlDto) {
     const short_url = await this.urlService.shortenUrl(
@@ -22,6 +34,7 @@ export class UrlController {
 
   @UseGuards(AuthGuard)
   @Throttle({ default: { ttl: 1000, limit: 15 } })
+  @HttpCode(HttpStatus.OK)
   @Get(':shortUrl')
   async getShortUrl(
     @Param('shortUrl') short_url: string,

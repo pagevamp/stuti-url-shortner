@@ -13,16 +13,16 @@ export class EmailVerifications {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: User;
-
-  @Column({ unique: true, type: 'varchar', nullable: true })
+  @Column({ unique: true, type: 'varchar', nullable:true })
   readonly token?: string | null;
 
-  @Column({ type: 'timestamptz'})
-  readonly expires_at: Date;
+  @Column({ type: 'timestamptz', nullable : true })
+  readonly expires_at?: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
+
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user: User;
 }
