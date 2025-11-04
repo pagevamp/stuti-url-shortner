@@ -20,8 +20,8 @@ export class EmailVerifications {
   @Column({ unique: true, type: 'varchar', nullable: true })
   readonly token?: string | null;
 
-  @Column({ type: 'timestamptz', nullable: true })
-  readonly expires_at?: Date | null;
+  @Column({ type: 'timestamptz'})
+  readonly expires_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;

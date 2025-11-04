@@ -16,7 +16,6 @@ import { LogModule } from 'log/log.module';
 import { UrlAnalyticsModule } from 'url-analytics/url-analytics.module';
 import { BullModule } from '@nestjs/bullmq';
 import { MailModule } from 'utils/mail.module';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -50,12 +49,16 @@ import { JwtModule } from '@nestjs/jwt';
         },
       ],
     }),
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: Number(process.env.REDIS_PORT) || 6379,
-      },
-      defaultJobOptions: { attempts: 3 },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT') || 6379,
+        },
+        defaultJobOptions: { attempts: 3 },
+      }),
+      inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(AppDataSourceOptions),

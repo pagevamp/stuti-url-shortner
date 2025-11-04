@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UrlAnalyticsService } from './url-analytics.service';
 import { UrlAnalytics } from './entities/url-analytics.entity';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { UrlAnalyticsProcessor } from './url-analytics.processor';
 
@@ -10,8 +10,9 @@ import { UrlAnalyticsProcessor } from './url-analytics.processor';
   imports: [
     TypeOrmModule.forFeature([UrlAnalytics]),
     BullModule.registerQueue({ name: 'url_analytics' }),
+    ConfigModule
   ],
   exports: [UrlAnalyticsService],
-  providers: [ConfigService, UrlAnalyticsService, UrlAnalyticsProcessor],
+  providers: [UrlAnalyticsService, UrlAnalyticsProcessor],
 })
 export class UrlAnalyticsModule {}

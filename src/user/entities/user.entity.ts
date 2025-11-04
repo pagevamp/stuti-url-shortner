@@ -17,12 +17,6 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @OneToMany(() => EmailVerifications, (verification) => verification.user)
-  emailVerifications: EmailVerifications[];
-
-  @OneToMany(() => Url, (url) => url.user)
-  urls: Url[];
-
   @Column({ type: 'varchar' })
   readonly name: string;
 
@@ -43,4 +37,10 @@ export class User {
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
+
+  @OneToMany(() => EmailVerifications, (verification) => verification.user)
+  emailVerifications: EmailVerifications[];
+
+  @OneToMany(() => Url, (url) => url.user)
+  urls: Url[];
 }

@@ -7,8 +7,9 @@ import { HashService } from './hash.service';
 import { EmailVerificationModule } from 'email-verification/email-verification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), EmailVerificationModule],
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
   providers: [UserService, HashService],
+  exports: [UserService, HashService],
 })
 export class UserModule {}

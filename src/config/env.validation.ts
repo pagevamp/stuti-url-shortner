@@ -5,6 +5,9 @@ export class EnvConfig {
   @IsString()
   DB_HOST: string;
 
+  @IsString()
+  REDIS_HOST: string;
+
   @Type(() => Number)
   @IsNumber()
   DB_PORT: number;

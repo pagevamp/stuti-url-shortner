@@ -19,13 +19,6 @@ export class Url {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.id, {onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: User;
-
-  @OneToMany(() => UrlAnalytics, (url_analytics) => url_analytics.url)
-  url_analytics: Url[];
-
   @Column({ type: 'varchar', length: 255 })
   readonly original_url: string;
 
@@ -42,5 +35,12 @@ export class Url {
   notified: boolean;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  readonly created_at: Date ;
+  readonly created_at: Date;
+
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user: User;
+
+  @OneToMany(() => UrlAnalytics, (url_analytics) => url_analytics.url)
+  url_analytics: Url[];
 }
