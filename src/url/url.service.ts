@@ -24,12 +24,20 @@ export class UrlService {
     private readonly analyticsService: UrlAnalyticsService,
   ) {}
 
-  async shortenUrl(user_id: string, original_url: string) {
-    let short_url: string;
+  private async generateShortUrl(): Promise<string> {
+    const short_url = nanoid();
+    const existing = await this.urlRepo.findOne({ where: { short_url } });
 
-    do {
-      short_url = nanoid();
-    } while (await this.urlRepo.findOne({ where: { short_url } }));
+    if (existing) {
+      this.logger.warn(`Duplicate short URL found (${short_url})`);
+      return this.generateShortUrl();
+    }
+
+    return short_url;
+  }
+
+  async shortenUrl(user_id: string, original_url: string) {
+    const short_url = await this.generateShortUrl();
 
     const expires_at = new Date(
       Date.now() + Number(this.configService.get('URL_EXPIRATION_TIME')) * 1000,
