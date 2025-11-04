@@ -19,13 +19,20 @@ export class UrlService {
     private readonly mailService: MailService,
   ) {}
 
-  private async generateShortUrl(limit: number = 10): Promise<string> {
+  private async generateShortUrl(
+    limit: number = 10,
+    currentRecursion: number = 0,
+  ): Promise<string> {
+    if (currentRecursion >= limit) {
+      return 'The recursive loop has reached its limits';
+    }
+
     const short_url = nanoid();
     const existing = await this.urlRepo.findOne({ where: { short_url } });
 
     if (existing) {
       this.logger.warn(`Duplicate short URL found (${short_url})`);
-      return this.generateShortUrl(limit + 1);
+      return this.generateShortUrl(currentRecursion + 1);
     }
 
     return short_url;
