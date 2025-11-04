@@ -1,5 +1,5 @@
 import { Url } from 'url/entities/url.entity';
-import { EmailVerification } from '../../email-verification/entities/email-verification.entity';
+import { EmailVerifications } from '../../email-verification/entities/email-verification.entity';
 import {
   Column,
   CreateDateColumn,
@@ -38,8 +38,8 @@ export class User {
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
 
-  @OneToMany(() => EmailVerification, (verification) => verification.user)
-  emailVerifications: EmailVerification[];
+  @OneToMany(() => EmailVerifications, (verification) => verification.user)
+  emailVerifications: EmailVerifications[];
 
   @OneToMany(() => Url, (url) => url.user)
   urls: Url[];
