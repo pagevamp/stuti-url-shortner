@@ -36,12 +36,9 @@ export class UrlService {
     return short_url;
   }
 
-  async shortenUrl(user_id: string, original_url: string) {
+  async shortenUrl(user_id: string, original_url: string, expires_at: Date) {
     const short_url = await this.generateShortUrl();
 
-    const expires_at = new Date(
-      Date.now() + Number(this.configService.get('URL_EXPIRATION_TIME')) * 1000,
-    );
 
     const url = this.urlRepo.create({
       original_url,

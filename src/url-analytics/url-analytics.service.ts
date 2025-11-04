@@ -22,7 +22,7 @@ export class UrlAnalyticsService {
       user_agent: userAgent,
     }, {
       attempts : 3,
-      removeOnComplete : true,
+      removeOnComplete : 100,
       removeOnFail : 100,
     });
   }
