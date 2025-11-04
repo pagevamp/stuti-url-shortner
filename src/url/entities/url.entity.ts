@@ -28,7 +28,7 @@ export class Url {
   readonly short_url: string;
 
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-  readonly deleted_at: Date | null;
+  readonly deleted_at?: Date | null;
 
   @Column({ type: 'timestamptz', nullable: true })
   readonly expires_at: Date;
