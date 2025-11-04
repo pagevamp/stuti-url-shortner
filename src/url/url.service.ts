@@ -49,7 +49,9 @@ export class UrlService {
 
   async getOriginalUrl(short_url: string, req: Request) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
-    if (!url) throw new NotFoundException('Could not find the provided Short Url');
+    if (!url) {
+      throw new NotFoundException('Could not find the provided Short Url');
+    }
 
     await this.analyticsService.analytics(req, url.id);
 
