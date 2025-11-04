@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { Url } from './entities/url.entity';
@@ -21,24 +21,20 @@ export class UrlService {
     private readonly logService: LogService,
   ) {}
 
-  private async generateShortUrl(): Promise<string> {
+  private async generateShortUrl(limit: number = 10): Promise<string> {
     const short_url = nanoid();
     const existing = await this.urlRepo.findOne({ where: { short_url } });
 
     if (existing) {
       this.logger.warn(`Duplicate short URL found (${short_url})`);
-      return this.generateShortUrl();
+      return this.generateShortUrl(limit + 1);
     }
 
     return short_url;
   }
 
-  async shortenUrl(user_id: string, original_url: string) {
+  async shortenUrl(user_id: string, original_url: string, expires_at: Date) {
     const short_url = await this.generateShortUrl();
-
-    const expires_at = new Date(
-      Date.now() + Number(this.configService.get('URL_EXPIRATION_TIME')) * 1000,
-    );
 
     const url = this.urlRepo.create({
       original_url,
@@ -55,7 +51,7 @@ export class UrlService {
   async getOriginalUrl(short_url: string) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
     if (!url) {
-      throw new Error('Could not find the provided Short Url');
+      throw new NotFoundException('Could not find the provided Short Url');
     }
     return url.original_url;
   }
@@ -68,7 +64,7 @@ export class UrlService {
       relations: ['user'],
     });
 
-    if (expiredUrls.length === 0) {
+    if (!expiredUrls.length) {
       this.logger.log('No expired URLs found at this time range');
       return;
     }

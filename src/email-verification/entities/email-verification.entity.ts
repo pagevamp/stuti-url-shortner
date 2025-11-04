@@ -9,20 +9,20 @@ import {
 import { User } from '../../user/entities/user.entity';
 
 @Entity('email_verifications')
-export class EmailVerification {
+export class EmailVerifications {
   @PrimaryGeneratedColumn()
-  id: string;
+  readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: User;
-
-  @Column({ unique: true })
-  token: string;
+  @Column({ unique: true, type: 'varchar' })
+  readonly token: string;
 
   @Column({ type: 'timestamptz' })
-  expires_at: Date;
+  readonly expires_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  created_at: Date;
+  readonly created_at: Date;
+
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user: User;
 }
