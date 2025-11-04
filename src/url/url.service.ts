@@ -52,7 +52,9 @@ export class UrlService {
 
   async getOriginalUrl(short_url: string) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
-    if (!url) throw new Error('Could not find the provided Short Url');
+    if (!url) {
+      throw new Error('Could not find the provided Short Url');
+    }
     return url.original_url;
   }
 
