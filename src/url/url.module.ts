@@ -13,6 +13,7 @@ import { UrlAnalyticsModule } from 'url-analytics/url-analytics.module';
 import { UserModule } from 'user/user.module';
 import { MailModule } from 'utils/mail.module';
 import { LogModule } from 'log/log.module';
+import { GuardModule } from 'guard/guard.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { LogModule } from 'log/log.module';
     MailModule,
     LogModule,
     ConfigModule,
-    JwtModule
+    JwtModule,
+    GuardModule
   ],
   providers: [
     UrlService,

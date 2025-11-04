@@ -24,11 +24,14 @@ export class UrlService {
     private readonly analyticsService: UrlAnalyticsService,
   ) {}
 
-  private async generateShortUrl(limit: number = 10, currentRecursion:number =0): Promise<string> {
+  private async generateShortUrl(
+    limit: number = 10,
+    currentRecursion: number = 0,
+  ): Promise<string> {
     if (currentRecursion >= limit) {
       return 'The recursive loop has reached its limits';
     }
-    
+
     const short_url = nanoid();
     const existing = await this.urlRepo.findOne({ where: { short_url } });
 
