@@ -21,12 +21,20 @@ export class UrlService {
     private readonly logService: LogService,
   ) {}
 
-  async shortenUrl(user_id: string, original_url: string) {
-    let short_url: string;
+  private async generateShortUrl(): Promise<string> {
+    const short_url = nanoid();
+    const existing = await this.urlRepo.findOne({ where: { short_url } });
 
-    do {
-      short_url = nanoid();
-    } while (await this.urlRepo.findOne({ where: { short_url } }));
+    if (existing) {
+      this.logger.warn(`Duplicate short URL found (${short_url})`);
+      return this.generateShortUrl();
+    }
+
+    return short_url;
+  }
+
+  async shortenUrl(user_id: string, original_url: string) {
+    const short_url = await this.generateShortUrl();
 
     const expires_at = new Date(
       Date.now() + Number(this.configService.get('URL_EXPIRATION_TIME')) * 1000,
@@ -46,7 +54,9 @@ export class UrlService {
 
   async getOriginalUrl(short_url: string) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
-    if (!url) throw new Error('Could not find the provided Short Url');
+    if (!url) {
+      throw new Error('Could not find the provided Short Url');
+    }
     return url.original_url;
   }
 
@@ -87,10 +97,9 @@ export class UrlService {
         );
 
         url.notified = true;
-        
+
         await this.urlRepo.save(url);
         this.logger.log(`Sent expiration email to ${url.user.email}`);
-        
       } catch (err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
         await this.logService.createLog(UrlService.name, `Failed to send email for URL ${url.id}`, {

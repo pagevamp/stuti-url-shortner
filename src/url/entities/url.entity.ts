@@ -21,20 +21,20 @@ export class Url {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   readonly user: User;
 
-  @Column({ nullable: false, type: 'varchar' })
-  original_url: string;
+  @Column({ type: 'varchar' })
+  readonly original_url: string;
 
   @Column({ unique: true, type: 'varchar' })
-  short_url?: string | null;
+  readonly short_url: string;
 
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-  deleted_at?: Date | null;
+  readonly deleted_at?: Date | null;
 
   @Column({ type: 'timestamptz', nullable: true })
-  expires_at?: Date | null;
+  readonly expires_at?: Date | null;
 
   @Column({ default: false, type: 'boolean' })
-  notified: boolean;
+  notified: boolean; // to identify if a url has expired
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;

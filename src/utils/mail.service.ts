@@ -1,3 +1,4 @@
+import { MailData } from './mail.types';
 import * as nodemailer from 'nodemailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -19,18 +20,7 @@ export class MailService {
     });
   }
 
-  async sendMail(
-    to: string,
-    data: {
-      template: string;
-      from: string | undefined;
-      project: string;
-      subject: string;
-      to: string;
-      url?: string;
-      expiresAt?: string | null;
-    },
-  ) {
+  async sendMail(to: string, data: MailData) {
     const templatePath = path.join(__dirname, '..', 'config', `${data.template}.hbs`);
     const source = fs.readFileSync(templatePath, 'utf8');
     const template = Handlebars.compile(source);
