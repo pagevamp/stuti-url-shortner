@@ -34,7 +34,7 @@ export class AuthService {
 
     const verifiedUser = await this.userRepo.findOne({ where: { username } });
 
-    if (verifiedUser?.verified_at === null) {
+    if (!verifiedUser?.verified_at) {
       throw new UnauthorizedException('This user has not been verified!');
     }
 
