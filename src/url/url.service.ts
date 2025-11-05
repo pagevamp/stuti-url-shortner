@@ -6,20 +6,19 @@ import { customAlphabet } from 'nanoid';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from 'utils/mail.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
+import { LogService } from 'log/log.service';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 7);
 
 @Injectable()
 export class UrlService {
-  private readonly logger = new Logger('UrlService');
+  private readonly logger = new Logger(UrlService.name);
   constructor(
     @InjectRepository(Url)
     private readonly urlRepo: Repository<Url>,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
-    private readonly jwtService: JwtService,
+    private readonly logService: LogService,
   ) {}
 
   private async generateShortUrl(currentRecursion: number = 0): Promise<string> {
@@ -82,9 +81,20 @@ export class UrlService {
           to: url.user.email,
           subject: `Your short url has expired`,
           project: '.SUS',
-          url: url.original_url,
-          expiresAt: url.expires_at.toUTCString(),
+          url: url.original_url ?? null,
+          expiresAt: url.expires_at?.toUTCString(),
         });
+
+        await this.logService.createLog(
+          UrlService.name,
+          `Sent expiration email to ${url.user.email}`,
+          {
+            urlId: url.id,
+            email: url.user.email,
+            user: url.user.username,
+            expiredAt: url.expires_at,
+          },
+        );
 
         url.notified = true;
 
@@ -92,6 +102,9 @@ export class UrlService {
         this.logger.log(`Sent expiration email to ${url.user.email}`);
       } catch (err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
+        await this.logService.createLog(UrlService.name, `Failed to send email for URL ${url.id}`, {
+          error: err.message,
+        });
       }
     }
   }
