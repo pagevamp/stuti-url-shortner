@@ -4,7 +4,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UrlAnalytics } from './entities/url-analytics.entity';
-import {Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AnalyticsFilterDto } from './dto/analytics-filter.dto';
 
 @Injectable()
@@ -21,15 +21,19 @@ export class UrlAnalyticsService {
     const userIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.ip;
     const userAgent = req.headers['user-agent'];
 
-    await this.analyticsQueue.add('log_visit', {
-      url_id: urlId,
-      ip_address: userIp,
-      user_agent: userAgent,
-    }, {
-      attempts : 3,
-      removeOnComplete : 100,
-      removeOnFail : 100,
-    });
+    await this.analyticsQueue.add(
+      'log_visit',
+      {
+        url_id: urlId,
+        ip_address: userIp,
+        user_agent: userAgent,
+      },
+      {
+        attempts: 3,
+        removeOnComplete: 100,
+        removeOnFail: 100,
+      },
+    );
   }
 
   async getAllAnalytics() {
@@ -41,12 +45,10 @@ export class UrlAnalyticsService {
     const records = this.analyticsRepo.createQueryBuilder('analytics');
 
     if (dto.start_date && dto.end_date) {
-      records
-        .where('analytics.clicked_at BETWEEN :start AND :end', {
-          start: dto.start_date,
-          end: dto.end_date,
-        })
-        .getCount();
+      records.where('analytics.clicked_at BETWEEN :start AND :end', {
+        start: dto.start_date,
+        end: dto.end_date,
+      });
     }
 
     if (dto.browser) {

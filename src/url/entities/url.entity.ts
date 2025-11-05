@@ -25,10 +25,10 @@ export class Url {
   @Column({ unique: true, type: 'varchar' })
   readonly short_url: string;
 
-  @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-  readonly deleted_at?: Date | null;
+  @DeleteDateColumn({ type: 'timestamptz' })
+  readonly deleted_at: Date;
 
-  @Column({ type: 'timestamptz'})
+  @Column({ type: 'timestamptz' })
   readonly expires_at: Date;
 
   @Column({ default: false, type: 'boolean' })

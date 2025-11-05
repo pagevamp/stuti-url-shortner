@@ -9,18 +9,6 @@ export class UrlAnalyticsController {
   @HttpCode(HttpStatus.PARTIAL_CONTENT)
   @Get()
   async filter(@Query() dto: AnalyticsFilterDto) {
-    const filter = Object.values(dto).some((val) => val !== undefined && val !== null);
-
-    if (!filter) {
-      const analytics = await this.urlAnalyticsService.getAllAnalytics();
-      const count = analytics.length;
-      return {
-        message: `These are the url analytics`,
-        count: { count },
-        data: { analytics },
-      };
-    }
-
     const filtered_analytics = await this.urlAnalyticsService.filter(dto);
     const filtered_count = filtered_analytics.length;
     return {
