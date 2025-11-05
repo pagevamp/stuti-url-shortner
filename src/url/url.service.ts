@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { MailService } from 'utils/mail.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 7);
 
@@ -18,6 +19,7 @@ export class UrlService {
     private readonly urlRepo: Repository<Url>,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
+    private readonly jwtService: JwtService,
   ) {}
 
   private async generateShortUrl(currentRecursion: number = 0): Promise<string> {
@@ -37,12 +39,13 @@ export class UrlService {
     return short_url;
   }
 
-  async shortenUrl(original_url: string, expires_at: Date) {
+  async shortenUrl(user_id: string, original_url: string, expires_at: Date) {
     const short_url = await this.generateShortUrl();
     const url = this.urlRepo.create({
       original_url,
       short_url,
       expires_at,
+      user: { id: user_id },
     });
 
     await this.urlRepo.save(url);
