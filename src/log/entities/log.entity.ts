@@ -12,7 +12,7 @@ export class Log {
   readonly message?: string | null;
 
   @Column({ type: 'json', nullable: true })
-  readonly metadata?: Record<string, any>;
+  readonly metadata?: Record<string, any> | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;

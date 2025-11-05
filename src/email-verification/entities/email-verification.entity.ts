@@ -13,10 +13,10 @@ export class EmailVerifications {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @Column({ unique: true, type: 'varchar', nullable:true })
+  @Column({ unique: true, type: 'varchar', nullable: true })
   readonly token?: string | null;
 
-  @Column({ type: 'timestamptz', nullable : true })
+  @Column({ type: 'timestamptz', nullable: true })
   readonly expires_at?: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
