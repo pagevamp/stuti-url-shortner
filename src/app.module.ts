@@ -21,7 +21,7 @@ import { MailModule } from 'utils/mail.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`],
+      envFilePath: [`.env.${process.env.NODE_ENV || 'production'}`],
       validate: (env) => {
         const envConfig = plainToInstance(EnvConfig, env, { enableImplicitConversion: true });
         const errors = validateSync(envConfig, { skipMissingProperties: false });
