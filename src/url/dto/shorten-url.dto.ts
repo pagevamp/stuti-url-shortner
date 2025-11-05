@@ -6,10 +6,6 @@ export class ShortenUrlDto {
   original_url: string;
 
   @IsNotEmpty()
-  @IsString()
-  user_id: string;
-
-  @IsNotEmpty()
   @IsDateString()
   expires_at: Date;
 }
