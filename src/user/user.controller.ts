@@ -14,7 +14,7 @@ import { UserService } from './user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Throttle } from '@nestjs/throttler';
-import { AuthGuard } from 'guard/auth.guard';
+import { AuthGuard } from 'core/auth.guard';
 
 @Controller('users')
 export class UserController {

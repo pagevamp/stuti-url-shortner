@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsISO31661Alpha2, IsOptional, IsString } from 'class-validator';
 
 export class AnalyticsFilterDto {
   @Transform(({ value }) => new Date(value).toUTCString(), { toPlainOnly: true })
@@ -26,5 +26,6 @@ export class AnalyticsFilterDto {
 
   @IsString()
   @IsOptional()
+  @IsISO31661Alpha2()
   country: string;
 }

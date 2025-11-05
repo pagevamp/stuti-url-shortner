@@ -19,6 +19,6 @@ export class UrlAnalytics1761808658016 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('DROP TABLE IF EXISTS "url-analytics"');
+    await queryRunner.query('DROP TABLE IF EXISTS "url_analytics"');
   }
 }

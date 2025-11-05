@@ -29,7 +29,7 @@ export class UrlService {
     currentRecursion: number = 0,
   ): Promise<string> {
     if (currentRecursion >= limit) {
-      return 'The recursive loop has reached its limits';
+      throw new RangeError('Recursive function exceeded limit');
     }
 
     const short_url = nanoid();

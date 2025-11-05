@@ -9,4 +9,4 @@ import { AuthGuard } from './auth.guard';
   controllers: [],
   exports: [AuthGuard],
 })
-export class GuardModule {}
+export class CoreModule {}

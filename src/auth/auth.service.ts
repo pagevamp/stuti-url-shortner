@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,14 +31,16 @@ export class AuthService {
 
   public async login(username: string, pass: string) {
     const user = await this.userRepo.findOne({ where: { username } });
-    if (!user) throw new UnauthorizedException('User not found');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
     const validPassword = await this.hashService.comparePassword(pass, user.password);
     if (!validPassword) {
       throw new UnauthorizedException('The password does not match!');
     }
 
-    if (!user?.verified_at) {
+    if (!user.verified_at) {
       throw new UnauthorizedException('This user has not been verified!');
     }
 
@@ -47,10 +55,12 @@ export class AuthService {
 
   public async sendEmail(email: string) {
     const user = await this.userRepo.findOneBy({ email });
-    if (!user) throw new Error('User not found');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
     if (user.verified_at) {
-      throw new UnauthorizedException('This user has already been verified!');
+      throw new ConflictException('This user has already been verified!');
     }
 
     const expires_at = new Date(
@@ -73,7 +83,7 @@ export class AuthService {
       to: email,
       subject: `Verify Your Email Address`,
       project: '.SUS',
-      url: url,
+      url,
       expiresAt: expires_at.toUTCString(),
     });
 
@@ -107,7 +117,7 @@ export class AuthService {
     if (!user) throw new Error('User not found');
 
     if (user.verified_at) {
-      throw new BadRequestException('Email already verified');
+      throw new ConflictException('Email already verified');
     }
     await this.sendEmail(user.email);
   }

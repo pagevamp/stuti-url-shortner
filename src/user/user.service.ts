@@ -42,7 +42,7 @@ export class UserService {
     if (userByUsername) {
       throw new BadRequestException('Username already in use');
     }
-    
+
     const hashedPassword = await this.hashService.hashPassword(password);
 
     const user = this.userRepo.create({ name, username, email, password: hashedPassword });
@@ -62,7 +62,6 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    user.updated_at = new Date();
     Object.assign(user, updateUserDto);
     return await this.userRepo.save(user);
   }

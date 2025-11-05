@@ -32,8 +32,8 @@ export class User {
   @Column({ type: 'timestamptz', nullable: true })
   verified_at?: Date | null;
 
-  @UpdateDateColumn({ type: 'timestamptz', nullable: true })
-  updated_at?: Date | null;
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updated_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
