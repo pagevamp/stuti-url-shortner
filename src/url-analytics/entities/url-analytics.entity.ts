@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Url } from 'url/entities/url.entity';
 
-@Entity('url-analytics')
+@Entity('url_analytics')
 export class UrlAnalytics {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;

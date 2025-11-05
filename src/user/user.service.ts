@@ -62,6 +62,7 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
+    user.updated_at = new Date();
     Object.assign(user, updateUserDto);
     return await this.userRepo.save(user);
   }
