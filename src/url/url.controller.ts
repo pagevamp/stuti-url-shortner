@@ -6,14 +6,15 @@ import {
   HttpStatus,
   Param,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { UrlService } from './url.service';
 import { ShortenUrlDto } from './dto/shorten-url.dto';
-import { AuthGuard } from 'auth/auth.guard';
 import { Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
+import { AuthGuard } from 'auth/auth.guard';
 
 @Controller('urls')
 export class UrlController {
@@ -21,13 +22,9 @@ export class UrlController {
 
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  @Post()
+  @Post('/')
   async shorten(@Body() dto: ShortenUrlDto) {
-    const short_url = await this.urlService.shortenUrl(
-      dto.user_id,
-      dto.original_url,
-      dto.expires_at,
-    );
+    const short_url = await this.urlService.shortenUrl(dto.user_id, dto.original_url, dto.expires_at);
     return { message: 'The Url is shortened', data: { short_url } };
   }
 
@@ -35,7 +32,11 @@ export class UrlController {
   @Throttle({ default: { ttl: 1000, limit: 15 } })
   @HttpCode(HttpStatus.OK)
   @Get(':shortUrl')
-  async getShortUrl(@Param('shortUrl') short_url: string, @Res() res: Response) {
+  async getShortUrl(
+    @Param('shortUrl') short_url: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     const originalUrl = await this.urlService.getOriginalUrl(short_url);
     res.redirect(originalUrl);
   }

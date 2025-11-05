@@ -10,14 +10,14 @@ import { User } from '../../user/entities/user.entity';
 
 @Entity('email_verifications')
 export class EmailVerifications {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @Column({ unique: true, type: 'varchar' })
-  readonly token: string;
+  @Column({ unique: true, type: 'varchar', nullable: true })
+  readonly token?: string | null;
 
-  @Column({ type: 'timestamptz' })
-  readonly expires_at: Date;
+  @Column({ type: 'timestamptz', nullable: true })
+  readonly expires_at?: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
