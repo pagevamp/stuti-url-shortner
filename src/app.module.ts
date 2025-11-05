@@ -1,6 +1,6 @@
 import { EnvConfig } from './config/env.validation';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppDataSourceOptions } from 'config/data-source';
 import { UserModule } from 'user/user.module';
@@ -13,6 +13,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LogModule } from 'log/log.module';
+import { UrlAnalyticsModule } from 'url-analytics/url-analytics.module';
+import { BullModule } from '@nestjs/bullmq';
+import { MailModule } from 'utils/mail.module';
 
 @Module({
   imports: [
@@ -46,13 +49,26 @@ import { LogModule } from 'log/log.module';
         },
       ],
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT') || 6379,
+        },
+        defaultJobOptions: { attempts: 3 },
+      }),
+      inject: [ConfigService],
+    }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(AppDataSourceOptions),
     UserModule,
     EmailVerificationModule,
     AuthModule,
     LogModule,
+    MailModule,
     UrlModule,
+    UrlAnalyticsModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

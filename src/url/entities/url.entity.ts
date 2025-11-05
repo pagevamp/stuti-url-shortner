@@ -5,8 +5,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UrlAnalytics } from 'url-analytics/entities/url-analytics.entity';
 import { User } from 'user/entities/user.entity';
 
 @Entity('urls')
@@ -17,7 +19,7 @@ export class Url {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', length: 255 })
   readonly original_url: string;
 
   @Column({ unique: true, type: 'varchar' })
@@ -37,5 +39,8 @@ export class Url {
 
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  readonly user: User;
+  user: User;
+
+  @OneToMany(() => UrlAnalytics, (url_analytics) => url_analytics.url)
+  url_analytics: Url[];
 }

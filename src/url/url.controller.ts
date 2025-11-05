@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { UrlService } from './url.service';
 import { ShortenUrlDto } from './dto/shorten-url.dto';
-import { Response } from 'express';
-import { Throttle } from '@nestjs/throttler';
 import { AuthGuard } from 'auth/auth.guard';
+import { Request, Response } from 'express';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('urls')
 export class UrlController {
@@ -37,7 +37,7 @@ export class UrlController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const originalUrl = await this.urlService.getOriginalUrl(short_url);
+    const originalUrl = await this.urlService.getOriginalUrl(short_url, req);
     res.redirect(originalUrl);
   }
 }

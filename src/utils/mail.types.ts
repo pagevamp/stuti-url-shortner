@@ -3,7 +3,7 @@ export interface MailData {
   project: string;
   subject: string;
   to: string;
-  expiresAt: string;
+  expiresAt?: string;
   from?: string;
   url?: string;
 }

@@ -15,10 +15,11 @@ import { AuthGuard } from './auth.guard';
     TypeOrmModule.forFeature([EmailVerifications, User]),
     UserModule,
     MailModule,
-    JwtModule,
     ConfigModule,
+    JwtModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthGuard],
+  exports: [AuthService, AuthGuard],
 })
 export class AuthModule {}
