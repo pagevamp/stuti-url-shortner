@@ -5,6 +5,7 @@ import { UrlAnalytics } from './entities/url-analytics.entity';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { UrlAnalyticsProcessor } from './url-analytics.processor';
+import { UrlAnalyticsController } from './url-analytics.controller';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { UrlAnalyticsProcessor } from './url-analytics.processor';
     BullModule.registerQueue({ name: 'url_analytics' }),
     ConfigModule,
   ],
+  controllers:[UrlAnalyticsController],
   exports: [UrlAnalyticsService],
   providers: [UrlAnalyticsService, UrlAnalyticsProcessor],
 })
