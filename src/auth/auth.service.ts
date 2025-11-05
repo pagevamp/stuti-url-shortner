@@ -32,9 +32,7 @@ export class AuthService {
       throw new UnauthorizedException('The password does not match!');
     }
 
-    const verifiedUser = await this.userRepo.findOne({ where: { username } });
-
-    if (!verifiedUser?.verified_at) {
+    if (!user?.verified_at) {
       throw new UnauthorizedException('This user has not been verified!');
     }
 
@@ -51,9 +49,7 @@ export class AuthService {
     const user = await this.userRepo.findOneBy({ email });
     if (!user) throw new Error('User not found');
 
-    const verifiedUser = await this.userRepo.findOne({ where: { email } });
-
-    if (verifiedUser?.verified_at) {
+    if (user.verified_at) {
       throw new UnauthorizedException('This user has already been verified!');
     }
 
