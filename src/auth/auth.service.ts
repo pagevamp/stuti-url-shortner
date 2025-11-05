@@ -37,11 +37,11 @@ export class AuthService {
 
     const validPassword = await this.hashService.comparePassword(pass, user.password);
     if (!validPassword) {
-      throw new UnauthorizedException('The password does not match!');
+      throw new UnauthorizedException('Password does not match!');
     }
 
     if (!user.verified_at) {
-      throw new UnauthorizedException('This user has not been verified!');
+      throw new UnauthorizedException('User is not verified!');
     }
 
     const payload = { sub: user.id, username: user.username };
@@ -60,7 +60,7 @@ export class AuthService {
     }
 
     if (user.verified_at) {
-      throw new ConflictException('This user has already been verified!');
+      throw new ConflictException('User already verified!');
     }
 
     const expires_at = new Date(
@@ -106,7 +106,7 @@ export class AuthService {
       throw new BadRequestException('Invalid token payload structure');
     } catch (error) {
       if (error?.name === 'TokenExpiredError') {
-        throw new BadRequestException('Your email confirmation token has expired');
+        throw new BadRequestException('Email confirmation token expired');
       }
     }
     throw new BadRequestException('Failed to verify email token');
