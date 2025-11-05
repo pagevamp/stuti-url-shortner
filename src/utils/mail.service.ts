@@ -1,8 +1,9 @@
+import { MailData } from './mail.types';
 import * as nodemailer from 'nodemailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import path from 'path';
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import Handlebars from 'handlebars';
 
 @Injectable()
@@ -19,20 +20,9 @@ export class MailService {
     });
   }
 
-  async sendMail(
-    to: string,
-    data: {
-      template: string;
-      from: string | undefined;
-      project: string;
-      subject: string;
-      to: string;
-      url: string;
-      expiresAt: string;
-    },
-  ) {
-    const templatePath = path.join(__dirname, '..', 'config', `${data.template || 'email'}.hbs`);
-    const source = fs.readFileSync(templatePath, 'utf8');
+  async sendMail(to: string, data: MailData) {
+    const templatePath = path.join(__dirname, '..', 'config', `${data.template}.hbs`);
+    const source = await fs.readFile(templatePath, 'utf8');
     const template = Handlebars.compile(source);
     const html = template(data);
 
@@ -43,9 +33,9 @@ export class MailService {
       html,
       attachments: [
         {
-          filename:'SUS.png',
-          path:path.join(__dirname, '..', 'assets', 'SUS.png'),
-          cid:'SUS',
+          filename: 'SUS.png',
+          path: path.join(__dirname, '..', 'assets', 'SUS.png'),
+          cid: 'SUS',
         },
       ],
     });

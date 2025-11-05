@@ -1,18 +1,24 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EmailVerification } from 'email-verification/entities/email-verification.entity';
+import { EmailVerifications } from 'email-verification/entities/email-verification.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { User } from 'user/entities/user.entity';
-import { JwtService } from '@nestjs/jwt';
-import { MailService } from 'utils/mail.service';
-import { ConfigService } from '@nestjs/config';
-import { UserService } from 'user/user.service';
-import { HashService } from 'user/hash.service';
+import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from 'user/user.module';
+import { MailModule } from 'utils/mail.module';
+import { ConfigModule } from '@nestjs/config';
+import { AuthGuard } from './auth.guard';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EmailVerification, User])],
+  imports: [
+    TypeOrmModule.forFeature([EmailVerifications, User]),
+    UserModule,
+    MailModule,
+    JwtModule,
+    ConfigModule,
+  ],
   controllers: [AuthController],
-  providers: [AuthService, JwtService, MailService, ConfigService, UserService, HashService],
+  providers: [AuthService, AuthGuard],
 })
 export class AuthModule {}

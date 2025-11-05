@@ -1,6 +1,13 @@
 import { Url } from 'url/entities/url.entity';
-import { EmailVerification } from '../../email-verification/entities/email-verification.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { EmailVerifications } from '../../email-verification/entities/email-verification.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -8,34 +15,32 @@ export class User {
     Object.assign(this, user);
   }
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  readonly id: string;
 
-  @OneToMany(() => EmailVerification, (verification) => verification.user)
-  emailVerifications: EmailVerification[];
+  @Column({ type: 'varchar' })
+  readonly name: string;
 
-  @OneToMany(() => Url, (url) => url.user)
-  urls: Url[];
+  @Column({ unique: true, type: 'varchar' })
+  readonly username: string;
 
-  @Column()
-  name: string;
+  @Column({ unique: true, type: 'varchar' })
+  readonly email: string;
 
-  @Column({ unique: true })
-  username: string;
-
-  @Column({ unique: true })
-  email: string;
-
-  @Column()
-  password: string;
+  @Column({ type: 'varchar' })
+  readonly password: string;
 
   @Column({ type: 'timestamptz', nullable: true })
-  verified_at: Date;
+  verified_at?: Date | null;
 
-  @UpdateDateColumn({ type: 'timestamptz', nullable: true })
+  @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  created_at: Date;
+  readonly created_at: Date;
+
+  @OneToMany(() => EmailVerifications, (verification) => verification.user)
+  emailVerifications: EmailVerifications[];
+
+  @OneToMany(() => Url, (url) => url.user)
+  urls: Url[];
 }
-
-

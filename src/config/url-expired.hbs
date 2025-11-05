@@ -1,25 +1,22 @@
 <html>
   <body style='font-family: Arial, sans-serif; margin: 0; padding: 45px; background-color:rgb(247, 247, 247)'>
     <div style='text-align: center;'>
-      <img src='cid:SUS' alt='logo' style='width: 85% ; height:450px; margin: 20px' />
+      <img src='cid:SUS' alt='logo' style='width: 85% ; height:450px; margin: 10px' />
     </div>
 
-    <h1 style='text-align: center; color:#F62C04'>Welcome to <strong>{{project}}</strong></h1>
+    <h1 style='text-align: center; color:#F62C04'>Hello again from <strong>{{project}}</strong></h1>
     <br />
     <br />
-    <h2>We are thrilled to welcome you onboard 🌻</h2>
-    <p style="font-size: large;">Please click on the link below to verify your email address:
+    <h2>Your shortened Url for {{url}} has expired</h2>
+    <p style="font-size: large;">
       <br />
       <br />
-      <a
-        href={{url}}
-        style='color: #9c3131; padding: 12px 40px; text-decoration: none; border-radius: 6px; font-weight:bolder'
-      >Click Here To Verify Email</a>
-      <br />
-      <br />
-      This link will expire on:
+      The shortened Url you had generated for the URL {{url}} expired at:
       <br />
       {{expiresAt}},
+      <br />
+      <br />
+      Please create a new one at <strong>{{project}}</strong>
     </p>
 
 

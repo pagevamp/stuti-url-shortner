@@ -15,18 +15,21 @@ export class AuthController {
     return this.authService.login(dto.username, dto.password);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('send-email')
   async sendEmail(@Body() dto: RequestEmailDto) {
     await this.authService.sendEmail(dto.email);
     return { message: 'Verification link sent to your email' };
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('resend-email')
   async resendVerificationLink(@Body() dto: ResendEmailDto) {
     await this.authService.resendVerificationLink(dto.email);
     return { message: 'Verification link has been sent to your email again' };
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('verify-email')
   async verifyEmail(@Body() dto: VerifyEmailDto) {
     const email = await this.authService.decodeVerificationToken(dto.token);

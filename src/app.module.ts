@@ -11,6 +11,7 @@ import { validateSync } from 'class-validator';
 import { UrlModule } from 'url/url.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { APP_GUARD } from '@nestjs/core';
         },
       ],
     }),
-
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(AppDataSourceOptions),
     UserModule,
     EmailVerificationModule,
@@ -52,6 +53,6 @@ import { APP_GUARD } from '@nestjs/core';
     UrlModule,
   ],
   controllers: [],
-  providers: [{provide: APP_GUARD, useClass:ThrottlerGuard }],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

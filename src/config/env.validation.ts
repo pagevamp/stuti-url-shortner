@@ -29,6 +29,9 @@ export class EnvConfig {
   JWT_EXPIRATION_TIME: string;
 
   @IsString()
+  URL_EXPIRATION_TIME: string;
+
+  @IsString()
   EMAIL_CONFIRMATION_URL: string;
 
   @IsEmail()

@@ -1,11 +1,11 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'user/entities/user.entity';
 
@@ -15,24 +15,27 @@ export class Url {
     Object.assign(this, url);
   }
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: User;
+  @Column({ type: 'varchar' })
+  readonly original_url: string;
 
-  @Column()
-  original_url: string;
+  @Column({ unique: true, type: 'varchar' })
+  readonly short_url: string;
 
-  @Column({ unique: true })
-  short_url: string;
+  @DeleteDateColumn({ type: 'timestamptz' })
+  readonly deleted_at: Date;
 
-  @Column({ type: 'timestamptz', nullable: true })
-  deleted_at: Date;
+  @Column({ type: 'timestamptz' })
+  readonly expires_at: Date;
 
-  @Column({ type: 'timestamptz', nullable: true })
-  expires_at: Date;
+  @Column({ default: false, type: 'boolean' })
+  notified: boolean; // to identify if a url has expired
 
   @CreateDateColumn({ type: 'timestamptz' })
-  created_at: Date;
+  readonly created_at: Date;
+
+  @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  readonly user: User;
 }

@@ -1,28 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 import { Url } from './entities/url.entity';
 import { customAlphabet } from 'nanoid';
+import { ConfigService } from '@nestjs/config';
+import { MailService } from 'utils/mail.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 7);
 
 @Injectable()
 export class UrlService {
+  private readonly logger = new Logger('UrlService');
   constructor(
     @InjectRepository(Url)
     private readonly urlRepo: Repository<Url>,
+    private readonly configService: ConfigService,
+    private readonly mailService: MailService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async shortenUrl(user_id: string, original_url: string) {
-    let short_url: string;
+  private async generateShortUrl(currentRecursion: number = 0): Promise<string> {
+    const limit: number = 10;
+    if (currentRecursion >= limit) {
+      return 'The recursive loop has reached its limits';
+    }
 
-    do {
-      short_url = nanoid();
-    } while (await this.urlRepo.findOne({ where: { short_url } }));
+    const short_url = nanoid();
+    const existing = await this.urlRepo.findOne({ where: { short_url } });
 
+    if (existing) {
+      this.logger.warn(`Duplicate short URL found (${short_url})`);
+      return this.generateShortUrl(currentRecursion + 1);
+    }
+
+    return short_url;
+  }
+
+  async shortenUrl(user_id: string, original_url: string, expires_at: Date) {
+    const short_url = await this.generateShortUrl();
     const url = this.urlRepo.create({
       original_url,
       short_url,
+      expires_at,
       user: { id: user_id },
     });
 
@@ -33,7 +55,44 @@ export class UrlService {
 
   async getOriginalUrl(short_url: string) {
     const url = await this.urlRepo.findOne({ where: { short_url } });
-    if (!url) throw new Error('Could not find the provided Short Url');
+    if (!url) {
+      throw new NotFoundException('Could not find the provided Short Url');
+    }
     return url.original_url;
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async scheduledNotification() {
+    const now = new Date();
+    const expiredUrls = await this.urlRepo.find({
+      where: { expires_at: LessThanOrEqual(now), notified: false },
+      relations: ['user'],
+    });
+
+    if (!expiredUrls.length) {
+      this.logger.log('No expired URLs found at this time range');
+      return;
+    }
+
+    for (const url of expiredUrls) {
+      try {
+        await this.mailService.sendMail(url.user.email, {
+          template: 'url-expired',
+          from: this.configService.get('EMAIL_USER'),
+          to: url.user.email,
+          subject: `Your short url has expired`,
+          project: '.SUS',
+          url: url.original_url,
+          expiresAt: url.expires_at.toUTCString(),
+        });
+
+        url.notified = true;
+
+        await this.urlRepo.save(url);
+        this.logger.log(`Sent expiration email to ${url.user.email}`);
+      } catch (err) {
+        this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
+      }
+    }
   }
 }
