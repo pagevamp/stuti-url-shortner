@@ -9,12 +9,14 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Throttle } from '@nestjs/throttler';
 import { AuthGuard } from 'core/auth.guard';
+import { Request } from 'express';
 
 @Controller('users')
 export class UserController {
@@ -38,15 +40,18 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const user = await this.usersService.update(id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
+    const user = await this.usersService.update(id, updateUserDto, req);
     return { message: 'The user has been updated successfully', data: { user } };
   }
 
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return (this.usersService.remove(id), { message: 'The user has been deleted successfully' });
+  async remove(@Param('id') id: string, @Req() req: Request) {
+    return (
+      this.usersService.remove(id, req),
+      { message: 'The user has been deleted successfully' }
+    );
   }
 }

@@ -1,10 +1,11 @@
 import { HashService } from './hash.service';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class UserService {
@@ -57,8 +58,12 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto, req: Request) {
+    const user_id = req.sub?.id;
     const user = await this.userRepo.findOneBy({ id });
+    if (id !== user_id) {
+      throw new ConflictException('Can only update logged user');
+    }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
@@ -66,8 +71,12 @@ export class UserService {
     return await this.userRepo.save(user);
   }
 
-  async remove(id: string) {
+  async remove(id: string, req: Request) {
+    const user_id = req.sub?.id;
     const user = await this.userRepo.findOneBy({ id });
+    if (id !== user_id) {
+      throw new ConflictException('Can only update logged user');
+    }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }

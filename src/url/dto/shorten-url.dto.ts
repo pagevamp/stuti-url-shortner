@@ -5,9 +5,9 @@ export class ShortenUrlDto {
   @IsString()
   original_url: string;
 
-  // @IsNotEmpty()
-  // @IsString()
-  // user_id: string;
+  @IsNotEmpty()
+  @IsString()
+  user_id: string;
 
   @IsNotEmpty()
   @IsDateString()
