@@ -41,6 +41,9 @@ export class EnvConfig {
   @IsString()
   EMAIL_CONFIRMATION_URL: string;
 
+  @IsString()
+  EMAIL_HOST: string;
+
   @IsEmail()
   @IsString()
   EMAIL_USER: string;
@@ -50,4 +53,8 @@ export class EnvConfig {
 
   @IsString()
   EMAIL_SERVICE: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  EMAIL_PORT: string;
 }
