@@ -50,11 +50,13 @@ export class UrlAnalyticsService {
         end: dto.end_date,
       });
     } else if (dto.start_date) {
+      // taking current date if end_date not given
       records.where('analytics.clicked_at BETWEEN :start AND :end', {
         start: dto.start_date,
         end: new Date().toUTCString(),
       });
     } else if (dto.end_date) {
+      // taking earliest start date from database if not given
       const earliest_date = await this.analyticsRepo
         .createQueryBuilder('date')
         .select('MIN(date.clicked_at)', 'minDate')
