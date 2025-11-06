@@ -51,9 +51,6 @@ export class EnvConfig {
   @IsString()
   EMAIL_PASSWORD: string;
 
-  @IsString()
-  EMAIL_SERVICE: string;
-
   @Type(() => Number)
   @IsNumber()
   EMAIL_PORT: string;
