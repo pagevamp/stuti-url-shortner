@@ -4,8 +4,9 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UrlAnalytics } from './entities/url-analytics.entity';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { AnalyticsFilterDto } from './dto/analytics-filter.dto';
+import { MIN_DATE } from 'class-validator';
 
 @Injectable()
 export class UrlAnalyticsService {
@@ -49,6 +50,20 @@ export class UrlAnalyticsService {
         start: dto.start_date,
         end: dto.end_date,
       });
+    } else if (dto.start_date) {
+      records.where('analytics.clicked_at BETWEEN :start AND :end', {
+        start: dto.start_date,
+        end: new Date().toUTCString(),
+      });
+    } else if (dto.end_date) {
+      const earliest_date = await this.analyticsRepo
+        .createQueryBuilder('date')
+        .select('MIN(date.clicked_at)', 'minDate')
+        .getRawOne();
+      records.where('analytics.clicked_at BETWEEN :start AND :end', {
+        start: earliest_date.minDate,
+        end: dto.end_date,
+      });
     }
 
     if (dto.browser) {
@@ -67,6 +82,7 @@ export class UrlAnalyticsService {
       records.where('analytics.country = :country', { country: dto.country });
     }
 
-    return records.getMany();
+    const [data, count] = await records.getManyAndCount();
+    return { count, data };
   }
 }

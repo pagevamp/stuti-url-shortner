@@ -10,10 +10,8 @@ export class UrlAnalyticsController {
   @Get()
   async filter(@Query() dto: AnalyticsFilterDto) {
     const filtered_analytics = await this.urlAnalyticsService.filter(dto);
-    const filtered_count = filtered_analytics.length;
     return {
       message: 'These are the filtered url analytics',
-      count: { filtered_count },
       data: { filtered_analytics },
     };
   }
