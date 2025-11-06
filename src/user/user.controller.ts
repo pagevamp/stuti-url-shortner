@@ -42,6 +42,7 @@ export class UserController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
     const user = await this.usersService.update(id, updateUserDto, req);
+    console.log(req);
     return { message: 'The user has been updated successfully', data: { user } };
   }
 
