@@ -1,5 +1,11 @@
 import { JwtService } from '@nestjs/jwt';
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  CanActivate,
+  ConflictException,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 
@@ -15,23 +21,23 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException('The request does not match any tokens');
+      throw new UnauthorizedException('Request does not match any tokens');
     }
 
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get('JWT_SECRET'),
       });
-      
+
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException();
+      throw new ConflictException('Token could not be verified');
     }
     return true;
   }
 
-  private extractTokenFromHeader(request: Request) : string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ')?? [];
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
-  };
+  }
 }
