@@ -5,9 +5,6 @@ export class EnvConfig {
   @IsString()
   DB_HOST: string;
 
-  @IsString()
-  REDIS_HOST: string;
-
   @Type(() => Number)
   @IsNumber()
   DB_PORT: number;
@@ -25,6 +22,9 @@ export class EnvConfig {
   @IsNumber()
   PORT: number;
 
+  @IsString()
+  REDIS_HOST: string;
+
   @Type(() => Number)
   @IsNumber()
   REDIS_PORT: number;
@@ -38,20 +38,19 @@ export class EnvConfig {
   @IsString()
   URL_EXPIRATION_TIME: string;
 
-  @IsString()
-  EMAIL_CONFIRMATION_URL: string;
+  @Type(() => Number)
+  @IsNumber()
+  EMAIL_PORT: number;
 
   @IsString()
   EMAIL_HOST: string;
 
-  @IsEmail()
   @IsString()
   EMAIL_USER: string;
 
   @IsString()
   EMAIL_PASSWORD: string;
 
-  @Type(() => Number)
-  @IsNumber()
-  EMAIL_PORT: string;
+  @IsString()
+  EMAIL_CONFIRMATION_URL: string;
 }
