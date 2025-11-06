@@ -41,7 +41,8 @@ export class UrlService {
     return short_url;
   }
 
-  async shortenUrl(user_id: string, original_url: string, expires_at: Date) {
+  async shortenUrl(original_url: string, expires_at: Date, req : Request) {
+    const user_id = await req.user?.id;
     const short_url = await this.generateShortUrl();
     const url = this.urlRepo.create({
       original_url,
