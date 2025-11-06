@@ -10,7 +10,7 @@ export class Users1760485409896 implements MigrationInterface {
         "email" VARCHAR(50) UNIQUE NOT NULL,
         "password" VARCHAR NOT NULL,
         "verified_at" timestamptz,
-        "updated_at" timestamptz NOT NULL,
+        "updated_at" timestamptz DEFAULT now() NOT NULL,
         "created_at" timestamptz DEFAULT now() NOT NULL
       );
     `,
