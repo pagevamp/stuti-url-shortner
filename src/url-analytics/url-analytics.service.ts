@@ -4,9 +4,8 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UrlAnalytics } from './entities/url-analytics.entity';
-import { LessThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AnalyticsFilterDto } from './dto/analytics-filter.dto';
-import { MIN_DATE } from 'class-validator';
 
 @Injectable()
 export class UrlAnalyticsService {
@@ -67,19 +66,36 @@ export class UrlAnalyticsService {
     }
 
     if (dto.browser) {
-      records.where('analytics.browser = :browser', { browser: dto.browser });
+      records.andWhere('analytics.browser = :browser', { browser: dto.browser });
     }
 
     if (dto.device) {
-      records.where('analytics.device = :device', { device: dto.device });
+      records.andWhere('analytics.device = :device', { device: dto.device });
     }
 
     if (dto.os) {
-      records.where('analytics.os = :os', { os: dto.os });
+      records.andWhere('analytics.os = :os', { os: dto.os });
     }
 
     if (dto.country) {
-      records.where('analytics.country = :country', { country: dto.country });
+      records.andWhere('analytics.country = :country', { country: dto.country });
+    }
+
+    const groupColumns: string[] = [];
+    if (dto.groupByUrl) groupColumns.push('analytics.url_id');
+    if (dto.groupByBrowser) groupColumns.push('analytics.browser');
+    if (dto.groupByDevice) groupColumns.push('analytics.device');
+    if (dto.groupByOs) groupColumns.push('analytics.os');
+    if (dto.groupByCountry) groupColumns.push('analytics.country');
+
+    if (groupColumns.length > 0) {
+      records
+        .select(groupColumns.map((col) => `${col} AS "${col.split('.')[1]}"`))
+        .addSelect('COUNT(*)', 'count')
+        .groupBy(groupColumns.join(', '));
+
+      const data = await records.getRawMany();
+      return { count: data.length, data };
     }
 
     const [data, count] = await records.getManyAndCount();
