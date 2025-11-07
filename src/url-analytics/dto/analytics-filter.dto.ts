@@ -5,47 +5,47 @@ export class AnalyticsFilterDto {
   @Transform(({ value }) => new Date(value).toUTCString(), { toPlainOnly: true }) //to make the query date compatible with the date in database
   @IsOptional()
   @IsDateString()
-  readonly start_date: Date;
+  readonly start_date?: Date;
 
   @Transform(({ value }) => new Date(value).toUTCString(), { toPlainOnly: true }) //to make the query date compatible with the date in database
   @IsOptional()
   @IsDateString()
-  readonly end_date: Date;
+  readonly end_date?: Date;
 
   @IsString()
   @IsOptional()
-  readonly browser: string;
+  readonly browser?: string;
 
   @IsString()
   @IsOptional()
-  readonly os: string;
+  readonly os?: string;
 
   @IsString()
   @IsOptional()
-  readonly device: string;
+  readonly device?: string;
 
   @IsString()
   @IsOptional()
   @IsISO31661Alpha2() // to validate country codes with two character in UpperCase
-  readonly country: string;
+  readonly country?: string;
 
   @IsBoolean()
   @IsOptional()
-  readonly groupByUrl: string;
+  readonly groupByUrl?: string;
 
   @IsBoolean()
   @IsOptional()
-  readonly groupByBrowser: string;
+  readonly groupByBrowser?: string;
 
   @IsBoolean()
   @IsOptional()
-  readonly groupByOs: string;
+  readonly groupByOs?: string;
 
   @IsBoolean()
   @IsOptional()
-  readonly groupByDevice: string;
+  readonly groupByDevice?: string;
 
   @IsBoolean()
   @IsOptional()
-  readonly groupByCountry: string;
+  readonly groupByCountry?: string;
 }
