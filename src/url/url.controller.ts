@@ -22,24 +22,17 @@ import { ConfigService } from '@nestjs/config';
 export class UrlController {
   constructor(
     private readonly urlService: UrlService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) {}
 
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/')
-  async shorten(@Body() dto: ShortenUrlDto,  @Req() req: Request,) {
-    const token = req.header('x-auth-token');
-    const payload = await this.jwtService.verify(token as string, {
-      secret: this.configService.get('JWT_SECRET'),
-    });
-    const user_id = payload.user?.id;
+  async shorten(@Body() dto: ShortenUrlDto, @Req() req: Request) {
+    const user_id = req.user.id;
     const short_url = await this.urlService.shortenUrl(
       user_id,
       dto.original_url,
       dto.expires_at,
-      req,
     );
     return { message: 'The Url is shortened', data: { short_url } };
   }
