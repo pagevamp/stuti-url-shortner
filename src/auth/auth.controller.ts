@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RequestEmailDto } from './dto/request-email.dto';
