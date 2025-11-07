@@ -24,7 +24,8 @@ export class UrlController {
   @HttpCode(HttpStatus.CREATED)
   @Post('/')
   async shorten(@Body() dto: ShortenUrlDto, @Req() req: Request) {
-    const user_id = req.user.id;
+    console.log('req.user:', req.user);
+    const user_id = req.user.sub;
     const short_url = await this.urlService.shortenUrl(user_id, dto.original_url, dto.expires_at);
     return { message: 'The Url is shortened', data: { short_url } };
   }

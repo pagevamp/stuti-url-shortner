@@ -64,10 +64,9 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto, @Req() req: Request) {
-    const user_id = req.user.id;
+  async update(id: string, updateUserDto: UpdateUserDto, loggedInUserId: string) {
     const user = await this.userRepo.findOneBy({ id });
-    if (user?.id !== user_id) {
+    if (user?.id !== loggedInUserId) {
       throw new ConflictException(`Can only update logged in users`);
     }
     if (!user) {
@@ -77,10 +76,9 @@ export class UserService {
     return await this.userRepo.save(user);
   }
 
-  async remove(id: string, @Req() req: Request) {
-    const user_id = req.user.id;
+  async remove(id: string, loggedInUserId: string) {
     const user = await this.userRepo.findOneBy({ id });
-    if (user?.id !== user_id) {
+    if (user?.id !== loggedInUserId) {
       throw new ConflictException(`Can only update logged in users`);
     }
     if (!user) {
