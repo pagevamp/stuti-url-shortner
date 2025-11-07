@@ -45,26 +45,12 @@ export class UrlAnalyticsService {
   async filter(dto: AnalyticsFilterDto) {
     const records = this.analyticsRepo.createQueryBuilder('analytics');
 
-    if (dto.start_date && dto.end_date) {
+    if (dto.start_date || dto.end_date) {
       records.where('analytics.clicked_at BETWEEN :start AND :end', {
-        start: dto.start_date,
-        end: dto.end_date,
+        start: dto.start_date ?? new Date(0), // taking the epoch date if start_date not given
+        end: dto.end_date ?? new Date(), // taking current date if end_date not given
       });
-    } else if (dto.start_date) {
-      records.where('analytics.clicked_at BETWEEN :start AND :end', {
-        start: dto.start_date,
-        end: new Date().toUTCString(),
-      });
-    } else if (dto.end_date) {
-      const earliest_date = await this.analyticsRepo
-        .createQueryBuilder('date')
-        .select('MIN(date.clicked_at)', 'minDate')
-        .getRawOne();
-      records.where('analytics.clicked_at BETWEEN :start AND :end', {
-        start: earliest_date.minDate,
-        end: dto.end_date,
-      });
-    }
+    } 
 
     if (dto.browser) {
       records.where('analytics.browser = :browser', { browser: dto.browser });

@@ -39,7 +39,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('verify-email')
+  @Post('verify-email')
   async verifyEmail(@Query() dto: VerifyEmailDto) {
     const email = await this.authService.decodeVerificationToken(dto.token);
     await this.authService.verifyEmail(email);
