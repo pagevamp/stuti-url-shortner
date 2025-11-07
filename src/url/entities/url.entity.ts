@@ -25,6 +25,9 @@ export class Url {
   @Column({ unique: true, type: 'varchar' })
   readonly short_url: string;
 
+  @Column({ type: 'uuid' })
+  readonly user_id: string;
+
   @DeleteDateColumn({ type: 'timestamptz' })
   readonly deleted_at: Date;
 

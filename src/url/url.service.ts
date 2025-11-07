@@ -47,7 +47,7 @@ export class UrlService {
       original_url,
       short_url,
       expires_at,
-      user: { id: user_id },
+      user_id: user_id,
     });
 
     await this.urlRepo.save(url);
