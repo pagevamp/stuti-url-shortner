@@ -1,15 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RequestEmailDto } from './dto/request-email.dto';
-import { ResendEmailDto } from './dto/resend-email.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { LoginDto } from './dto/login-user.dto';
 
@@ -32,7 +23,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('resend-email')
-  async resendVerificationLink(@Body() dto: ResendEmailDto) {
+  async resendVerificationLink(@Body() dto: RequestEmailDto) {
     await this.authService.resendVerificationLink(dto.email);
     return { message: 'Verification link has been sent to your email again' };
   }
