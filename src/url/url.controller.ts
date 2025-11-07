@@ -36,7 +36,7 @@ export class UrlController {
     });
     const user_id = payload.user?.id;
     const short_url = await this.urlService.shortenUrl(
-      dto.user_id,
+      user_id,
       dto.original_url,
       dto.expires_at,
       req,
