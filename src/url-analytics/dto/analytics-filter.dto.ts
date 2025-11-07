@@ -31,21 +31,21 @@ export class AnalyticsFilterDto {
 
   @IsBoolean()
   @IsOptional()
-  readonly groupByUrl?: string;
+  readonly groupByUrl?: boolean;
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
   readonly groupByBrowser?: string;
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
   readonly groupByOs?: string;
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
   readonly groupByDevice?: string;
 
-  @IsBoolean()
+  @IsString()
   @IsOptional()
   readonly groupByCountry?: string;
 }
