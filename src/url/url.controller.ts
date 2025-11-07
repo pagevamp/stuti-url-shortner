@@ -15,25 +15,17 @@ import { ShortenUrlDto } from './dto/shorten-url.dto';
 import { AuthGuard } from 'core/auth.guard';
 import { Request, Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 
 @Controller('urls')
 export class UrlController {
-  constructor(
-    private readonly urlService: UrlService,
-  ) {}
+  constructor(private readonly urlService: UrlService) {}
 
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/')
   async shorten(@Body() dto: ShortenUrlDto, @Req() req: Request) {
     const user_id = req.user.id;
-    const short_url = await this.urlService.shortenUrl(
-      user_id,
-      dto.original_url,
-      dto.expires_at,
-    );
+    const short_url = await this.urlService.shortenUrl(user_id, dto.original_url, dto.expires_at);
     return { message: 'The Url is shortened', data: { short_url } };
   }
 

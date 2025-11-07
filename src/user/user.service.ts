@@ -4,6 +4,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  Req,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -25,7 +26,7 @@ export class UserService {
     if (!user) throw new BadRequestException('User not found');
 
     if (user.verified_at) {
-      throw new BadRequestException('Email already verified');
+      throw new ConflictException('Email already verified');
     }
 
     user.verified_at = new Date();
@@ -63,8 +64,12 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto, @Req() req: Request) {
+    const user_id = req.user.id;
     const user = await this.userRepo.findOneBy({ id });
+    if (user?.id !== user_id) {
+      throw new ConflictException(`Can only update logged in users`);
+    }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
@@ -72,8 +77,12 @@ export class UserService {
     return await this.userRepo.save(user);
   }
 
-  async remove(id: string) {
+  async remove(id: string, @Req() req: Request) {
+    const user_id = req.user.id;
     const user = await this.userRepo.findOneBy({ id });
+    if (user?.id !== user_id) {
+      throw new ConflictException(`Can only update logged in users`);
+    }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }

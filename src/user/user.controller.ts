@@ -40,18 +40,15 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const user = await this.usersService.update(id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
+    const user = await this.usersService.update(id, updateUserDto, req);
     return { message: 'The user has been updated successfully', data: { user } };
   }
 
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return (
-      this.usersService.remove(id),
-      { message: 'The user has been deleted successfully' }
-    );
+  async remove(@Param('id') id: string, @Req() req: Request) {
+    return (this.usersService.remove(id, req), { message: 'The user has been deleted successfully' });
   }
 }

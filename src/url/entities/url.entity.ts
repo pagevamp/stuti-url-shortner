@@ -41,7 +41,7 @@ export class Url {
   readonly created_at: Date;
 
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @OneToMany(() => UrlAnalytics, (url_analytics) => url_analytics.url)
