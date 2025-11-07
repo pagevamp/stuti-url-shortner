@@ -12,7 +12,7 @@ export class UpdateUserDto {
   @IsString()
   @MinLength(2, { message: 'Name must be at least 2 characters' })
   @MaxLength(50, { message: 'Name cannot exceed 50 characters' })
-  name?: string;
+  readonly name?: string;
 
   @IsOptional()
   @IsString()
@@ -21,10 +21,10 @@ export class UpdateUserDto {
   @Matches(/^[a-zA-Z0-9_]+$/, {
     message: 'Username can only contain letters, numbers, and underscores',
   })
-  username?: string;
+  readonly username?: string;
 
   @IsOptional()
   @IsEmail({}, { message: 'Email must be valid' })
   @MaxLength(100, { message: 'Email cannot exceed 100 characters' })
-  email?: string;
+  readonly email?: string;
 }

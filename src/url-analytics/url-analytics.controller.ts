@@ -5,7 +5,6 @@ import { AnalyticsFilterDto } from './dto/analytics-filter.dto';
 @Controller('url-analytics')
 export class UrlAnalyticsController {
   constructor(private readonly urlAnalyticsService: UrlAnalyticsService) {}
-
   @HttpCode(HttpStatus.PARTIAL_CONTENT)
   @Get()
   async filter(@Query() dto: AnalyticsFilterDto) {

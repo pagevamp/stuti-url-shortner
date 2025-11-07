@@ -14,12 +14,7 @@ export class UrlAnalytics1761808658016 implements MigrationInterface {
            "device" VARCHAR(255),
            "clicked_at" timestamptz DEFAULT now(),
            CONSTRAINT "FK_url_analytics_url_id_key" FOREIGN KEY ("url_id") REFERENCES "urls"("id") ON DELETE CASCADE
-           );
-          
-          CREATE INDEX "idx_url_analytics_id" ON "url_analytics" ("id");
-          
-
-           `,
+           );`,
     );
   }
 

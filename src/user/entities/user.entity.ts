@@ -16,7 +16,6 @@ export class User {
     Object.assign(this, user);
   }
   @PrimaryGeneratedColumn('uuid')
-  @Index('idx_user_id')
   readonly id: string;
 
   @Column({ type: 'varchar' })
@@ -26,26 +25,25 @@ export class User {
   readonly username: string;
 
   @Column({ unique: true, type: 'varchar' })
-  @Index('idx_user_email')
+  @Index('idx_users_email')
   readonly email: string;
 
   @Column({ type: 'varchar' })
   readonly password: string;
 
   @Column({ type: 'timestamptz', nullable: true })
-  @Index('idx_verified_at')
-  verified_at?: Date | null;
+  @Index('idx_users_verified_at')
+  readonly verified_at?: Date | null;
 
   @UpdateDateColumn({ type: 'timestamptz' })
-  updated_at: Date;
+  readonly updated_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  @Index('idx_verified_at')
   readonly created_at: Date;
 
   @OneToMany(() => EmailVerifications, (verification) => verification.user)
-  emailVerifications: EmailVerifications[];
+  readonly emailVerifications: EmailVerifications[];
 
   @OneToMany(() => Url, (url) => url.user)
-  urls: Url[];
+  readonly urls: Url[];
 }

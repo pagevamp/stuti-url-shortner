@@ -2,16 +2,15 @@ import { HashService } from './hash.service';
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
-  Req,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Request } from 'express';
 
 @Injectable()
 export class UserService {
@@ -23,14 +22,14 @@ export class UserService {
 
   async confirmEmail(email: string) {
     const user = await this.userRepo.findOne({ where: { email } });
-    if (!user) throw new BadRequestException('User not found');
+    if (!user) throw new NotFoundException('User not found');
 
     if (user.verified_at) {
       throw new ConflictException('Email already verified');
     }
 
-    user.verified_at = new Date();
-    await this.userRepo.save(user);
+    const userWithEmail = await this.userRepo.save(user);
+    const { verified_at = new Date(), ...emailVerifiedUser } = userWithEmail;
   }
 
   async create(createUserDto: RegisterUserDto) {
@@ -40,18 +39,17 @@ export class UserService {
       where: { email },
     });
     if (userByEmail) {
-      throw new BadRequestException('Email already in use');
+      throw new ConflictException('Email already in use');
     }
 
     const userByUsername = await this.userRepo.findOne({
       where: { username },
     });
     if (userByUsername) {
-      throw new BadRequestException('Username already in use');
+      throw new ConflictException('Username already in use');
     }
 
     const hashedPassword = await this.hashService.hashPassword(password);
-
     const user = this.userRepo.create({ name, username, email, password: hashedPassword });
 
     const savedUser = await this.userRepo.save(user);
@@ -67,7 +65,7 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto, loggedInUserId: string) {
     const user = await this.userRepo.findOneBy({ id });
     if (user?.id !== loggedInUserId) {
-      throw new ConflictException(`Can only update logged in users`);
+      throw new ForbiddenException(`Can only update logged in users`);
     }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -79,7 +77,7 @@ export class UserService {
   async remove(id: string, loggedInUserId: string) {
     const user = await this.userRepo.findOneBy({ id });
     if (user?.id !== loggedInUserId) {
-      throw new ConflictException(`Can only update logged in users`);
+      throw new ForbiddenException(`Can only update logged in users`);
     }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);

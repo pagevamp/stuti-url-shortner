@@ -102,9 +102,9 @@ export class UrlService {
           },
         );
 
-        url.notified = true;
+        const savedUrl = await this.urlRepo.save(url);
+        const { notified = true, ...expiredUrl } = savedUrl;
 
-        await this.urlRepo.save(url);
         this.logger.log(`Sent expiration email to ${url.user.email}`);
       } catch (err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);

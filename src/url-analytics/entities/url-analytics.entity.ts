@@ -12,7 +12,6 @@ import { Url } from 'url/entities/url.entity';
 @Entity('url_analytics')
 export class UrlAnalytics {
   @PrimaryGeneratedColumn('uuid')
-  @Index('idx_url_analytics_id')
   readonly id: string;
 
   @Column({ nullable: true, type: 'varchar' })
@@ -34,9 +33,10 @@ export class UrlAnalytics {
   readonly device?: string | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
+  @Index('idx_url_analytics_clicked_at')
   readonly clicked_at: Date;
 
   @ManyToOne(() => Url, (url) => url.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'url_id', referencedColumnName: 'id' })
-  url: Url;
+  readonly url: Url;
 }

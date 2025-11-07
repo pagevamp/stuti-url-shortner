@@ -1,8 +1,7 @@
-import { IsString } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 
 export class ResendEmailDto {
-
+  @IsEmail()
   @IsString()
-  email: string;
-  
+  readonly email: string;
 }
