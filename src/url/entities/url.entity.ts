@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -17,6 +18,7 @@ export class Url {
     Object.assign(this, url);
   }
   @PrimaryGeneratedColumn('uuid')
+  @Index('idx_urls_id')
   readonly id: string;
 
   @Column({ type: 'varchar', length: 255 })
@@ -32,9 +34,11 @@ export class Url {
   readonly deleted_at: Date;
 
   @Column({ type: 'timestamptz' })
+  @Index('idx_expires_at')
   readonly expires_at: Date;
 
   @Column({ default: false, type: 'boolean' })
+  @Index('idx_notified')
   notified: boolean; // to identify if a url has expired
 
   @CreateDateColumn({ type: 'timestamptz' })

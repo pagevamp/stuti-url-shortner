@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class EmailVerifications1760551172519 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -11,6 +11,9 @@ export class EmailVerifications1760551172519 implements MigrationInterface {
         "created_at" timestamptz NOT NULL DEFAULT now(),
         CONSTRAINT "FK_email_verifications_user_id_key" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
         );
+      CREATE INDEX "idx_email_id" ON "email_verifications" ("id");
+      CREATE INDEX "idx_email_token" ON "email_verifications" ("token");
+      CREATE INDEX "idx_expires_at" ON "email_verifications" ("expires_at");
     `,
     );
   }

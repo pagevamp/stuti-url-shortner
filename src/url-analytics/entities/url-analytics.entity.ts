@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -11,6 +12,7 @@ import { Url } from 'url/entities/url.entity';
 @Entity('url_analytics')
 export class UrlAnalytics {
   @PrimaryGeneratedColumn('uuid')
+  @Index('idx_url_analytics_id')
   readonly id: string;
 
   @Column({ nullable: true, type: 'varchar' })

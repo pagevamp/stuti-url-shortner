@@ -13,6 +13,10 @@ export class Users1760485409896 implements MigrationInterface {
         "updated_at" timestamptz DEFAULT now() NOT NULL,
         "created_at" timestamptz DEFAULT now() NOT NULL
       );
+      CREATE INDEX "idx_user_id" ON "users" ("id");
+      CREATE INDEX "idx_user_email" ON "users" ("email");
+      CREATE INDEX "idx_verified_at" ON "users" ("verified_at")
+
     `,
     );
   }
