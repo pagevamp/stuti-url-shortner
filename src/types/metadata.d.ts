@@ -6,4 +6,5 @@ export interface LogMetaData {
   urlId?: Url['id'] | null;
   email?: User['email'] | null;
   expiredAt?: Url['expires_at'] | null;
+  error?: string | null;
 }
