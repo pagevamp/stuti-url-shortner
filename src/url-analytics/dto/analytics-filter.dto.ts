@@ -1,5 +1,7 @@
 import { Transform } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
   IsArray,
   IsBoolean,
   IsDateString,
@@ -38,7 +40,6 @@ export class AnalyticsFilterDto {
   readonly country?: string;
 
   @IsOptional()
-  @IsArray()
   @IsIn(['browser', 'os', 'device', 'country', 'url'], { each: true })
   readonly groupBy?: string[] | null;
 }
