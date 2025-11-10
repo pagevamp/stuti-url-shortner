@@ -1,4 +1,12 @@
-import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Length,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 // to ensure that password contains at least : one lowercase letter,one uppercase letter,
 // one digit and one of the following characters => !@#$%^&*
@@ -27,7 +35,7 @@ export class RegisterUserDto {
 
   @IsString()
   @IsNotEmpty({ message: 'Password is required' })
-  @MaxLength(16, { message: 'Password must be at most 12 characters' })
+  @Length(8, 16, { message: 'Password must be at least 8 and at most 16 characters' })
   @Matches(passwordRegex, {
     message: `Password must contain at least : one lowercase letter, 
        one uppercase letter, one digit and one of the symbols !@#$%^&*`,
