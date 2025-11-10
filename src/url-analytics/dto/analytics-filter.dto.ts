@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsDateString, IsISO31661Alpha2, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDateString, IsIn, IsISO31661Alpha2, IsOptional, IsString } from 'class-validator';
 
 export class AnalyticsFilterDto {
   @Transform(({ value }) => new Date(value).toUTCString(), { toPlainOnly: true }) //to make the query date compatible with the date in database
@@ -29,23 +29,8 @@ export class AnalyticsFilterDto {
   @IsISO31661Alpha2() // to validate country codes with two character in UpperCase
   readonly country?: string;
 
-  @IsBoolean()
   @IsOptional()
-  readonly groupByUrl?: boolean;
-
-  @IsString()
-  @IsOptional()
-  readonly groupByBrowser?: string;
-
-  @IsString()
-  @IsOptional()
-  readonly groupByOs?: string;
-
-  @IsString()
-  @IsOptional()
-  readonly groupByDevice?: string;
-
-  @IsString()
-  @IsOptional()
-  readonly groupByCountry?: string;
+  @IsArray()
+  @IsIn(['browser', 'os', 'device', 'country', 'url'])
+  readonly groupBy? : string[] | null
 }

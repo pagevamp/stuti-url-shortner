@@ -1,11 +1,8 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+
+// to ensure that password contains at least : one lowercase letter,one uppercase letter,
+// one digit and one of the following characters => !@#$%^&*
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,})/;
 
 export class RegisterUserDto {
   @IsString()
@@ -30,6 +27,10 @@ export class RegisterUserDto {
 
   @IsString()
   @IsNotEmpty({ message: 'Password is required' })
-  @MinLength(6, { message: 'Password must be at least 6 characters' })
+  @MaxLength(16, { message: 'Password must be at most 12 characters' })
+  @Matches(passwordRegex, {
+    message: `Password must contain at least : one lowercase letter, 
+       one uppercase letter, one digit and one of the symbols !@#$%^&*`,
+  })
   readonly password: string;
 }

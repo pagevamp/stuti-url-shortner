@@ -68,17 +68,18 @@ export class UrlAnalyticsService {
     }
 
     const groupColumns: string[] = [];
-    if (dto.groupByUrl) groupColumns.push('analytics.url_id');
-    if (dto.groupByBrowser) groupColumns.push('analytics.browser');
-    if (dto.groupByDevice) groupColumns.push('analytics.device');
-    if (dto.groupByOs) groupColumns.push('analytics.os');
-    if (dto.groupByCountry) groupColumns.push('analytics.country');
+    if (dto.groupBy?.includes('url')) groupColumns.push('analytics.url_id');
+    if (dto.groupBy?.includes('browser')) groupColumns.push('analytics.browser');
+    if (dto.groupBy?.includes('device')) groupColumns.push('analytics.device');
+    if (dto.groupBy?.includes('os')) groupColumns.push('analytics.os');
+    if (dto.groupBy?.includes('country')) groupColumns.push('analytics.country');
 
     if (groupColumns.length > 0) {
       records
         .select(groupColumns.map((col) => `${col} AS "${col.split('.')[1]}"`))
         .addSelect('COUNT(*)', 'count')
-        .groupBy(groupColumns.join(', '));
+        .groupBy(groupColumns.join(', '))
+        .orderBy('count', 'ASC');
 
       const data = await records.getRawMany();
       return { count: data.length, data };
