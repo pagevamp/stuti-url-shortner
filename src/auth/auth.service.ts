@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,11 +31,17 @@ export class AuthService {
 
   public async login(username: string, pass: string) {
     const user = await this.userRepo.findOne({ where: { username } });
-    if (!user) throw new UnauthorizedException('User not found');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
     const validPassword = await this.hashService.comparePassword(pass, user.password);
     if (!validPassword) {
-      throw new UnauthorizedException('The password does not match!');
+      throw new UnauthorizedException('Password does not match!');
+    }
+
+    if (!user.verified_at) {
+      throw new UnauthorizedException('User is not verified!');
     }
 
     const payload = { sub: user.id, username: user.username };
@@ -43,7 +55,13 @@ export class AuthService {
 
   public async sendEmail(email: string) {
     const user = await this.userRepo.findOneBy({ email });
-    if (!user) throw new Error('User not found');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.verified_at) {
+      throw new ConflictException('User already verified!');
+    }
 
     const expires_at = new Date(
       Date.now() + Number(this.configService.get('JWT_EXPIRATION_TIME')) * 1000,
@@ -88,7 +106,7 @@ export class AuthService {
       throw new BadRequestException('Invalid token payload structure');
     } catch (error) {
       if (error?.name === 'TokenExpiredError') {
-        throw new BadRequestException('Your email confirmation token has expired');
+        throw new BadRequestException('Email confirmation token expired');
       }
     }
     throw new BadRequestException('Failed to verify email token');
@@ -99,7 +117,7 @@ export class AuthService {
     if (!user) throw new Error('User not found');
 
     if (user.verified_at) {
-      throw new BadRequestException('Email already verified');
+      throw new ConflictException('Email already verified');
     }
     await this.sendEmail(user.email);
   }

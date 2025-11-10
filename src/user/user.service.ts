@@ -42,7 +42,7 @@ export class UserService {
     if (userByUsername) {
       throw new BadRequestException('Username already in use');
     }
-    
+
     const hashedPassword = await this.hashService.hashPassword(password);
 
     const user = this.userRepo.create({ name, username, email, password: hashedPassword });

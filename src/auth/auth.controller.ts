@@ -1,4 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RequestEmailDto } from './dto/request-email.dto';
 import { ResendEmailDto } from './dto/resend-email.dto';
@@ -31,7 +40,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('verify-email')
-  async verifyEmail(@Body() dto: VerifyEmailDto) {
+  async verifyEmail(@Query() dto: VerifyEmailDto) {
     const email = await this.authService.decodeVerificationToken(dto.token);
     await this.authService.verifyEmail(email);
     return { message: 'The email is verified', data: { email } };

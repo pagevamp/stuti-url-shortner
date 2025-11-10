@@ -11,8 +11,8 @@ export class Log {
   @Column({ type: 'text', nullable: true })
   readonly message?: string | null;
 
-  @Column({ type: 'json', nullable: true })
-  readonly metadata?: Record<string, any> | null;
+  @Column({ type: 'jsonb', nullable: true })
+  readonly metadata?: Record<string, any> | null; 
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;

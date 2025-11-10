@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UrlService } from './url.service';
 import { ShortenUrlDto } from './dto/shorten-url.dto';
-import { AuthGuard } from 'auth/auth.guard';
+import { AuthGuard } from 'core/auth.guard';
 import { Request, Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
 

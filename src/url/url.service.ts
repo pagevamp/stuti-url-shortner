@@ -27,7 +27,7 @@ export class UrlService {
   private async generateShortUrl(currentRecursion: number = 0): Promise<string> {
     const limit: number = 10;
     if (currentRecursion >= limit) {
-      return 'The recursive loop has reached its limits';
+      throw new RangeError('The recursive loop has reached its limits');
     }
 
     const short_url = nanoid();
