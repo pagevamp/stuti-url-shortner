@@ -7,6 +7,8 @@ import {
   MinLength,
 } from 'class-validator';
 
+import { PartialType } from '@nestjs/mapped-types';
+
 export class RegisterUserDto {
   @IsString()
   @IsNotEmpty({ message: 'Name is required' })
@@ -33,3 +35,6 @@ export class RegisterUserDto {
   @MinLength(6, { message: 'Password must be at least 6 characters' })
   readonly password: string;
 }
+
+
+export class UpdateUserDto extends PartialType(RegisterUserDto) {}

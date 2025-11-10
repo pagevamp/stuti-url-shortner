@@ -12,8 +12,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { RegisterUserDto } from './dto/register-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { RegisterUserDto, UpdateUserDto } from './dto/register-user.dto';
 import { Throttle } from '@nestjs/throttler';
 import { AuthGuard } from 'core/auth.guard';
 import { Request } from 'express';
