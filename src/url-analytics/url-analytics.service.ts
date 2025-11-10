@@ -49,7 +49,7 @@ export class UrlAnalyticsService {
         start: dto.start_date ?? new Date(0), // taking the epoch date if start_date not given
         end: dto.end_date ?? new Date(), // taking current date if end_date not given
       });
-    }
+    } 
 
     if (dto.browser) {
       records.andWhere('analytics.browser = :browser', { browser: dto.browser });

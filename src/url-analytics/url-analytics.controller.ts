@@ -8,10 +8,10 @@ export class UrlAnalyticsController {
   @HttpCode(HttpStatus.PARTIAL_CONTENT)
   @Get()
   async filter(@Query() dto: AnalyticsFilterDto) {
-    const filtered_analytics = await this.urlAnalyticsService.filter(dto);
+    const filteredAnalytics = await this.urlAnalyticsService.filter(dto);
     return {
       message: 'These are the filtered url analytics',
-      data: { filtered_analytics },
+      data: { filteredAnalytics },
     };
   }
 }
