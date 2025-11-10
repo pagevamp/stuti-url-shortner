@@ -47,10 +47,10 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete(':id')
-  async remove(@Param('id') id: string, @Req() req: Request) {
+  @Delete(':id/me')
+  async remove(@Req() req: Request) {
     return (
-      this.usersService.remove(id, req.user.sub),
+      this.usersService.remove(req.user.sub),
       { message: 'The user has been deleted successfully' }
     );
   }

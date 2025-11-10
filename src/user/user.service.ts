@@ -62,23 +62,8 @@ export class UserService {
     return user;
   }
 
-  // async update(id: string, updateUserDto: UpdateUserDto, loggedInUserId: string) {
-  //   const user = await this.userRepo.findOneBy({ id });
-  //   if (user?.id !== loggedInUserId) {
-  //     throw new ForbiddenException(`Can only update logged in users`);
-  //   }
-  //   if (!user) {
-  //     throw new NotFoundException(`User with id ${id} not found`);
-  //   }
-  //   Object.assign(user, updateUserDto);
-  //   return await this.userRepo.save(user);
-  // }
-
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userRepo.findOneBy({ id });
-    // if (user?.id !== loggedInUserId) {
-    //   throw new ForbiddenException(`Can only update logged in users`);
-    // }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
@@ -86,11 +71,8 @@ export class UserService {
     return await this.userRepo.save(user);
   }
 
-  async remove(id: string, loggedInUserId: string) {
+  async remove(id: string) {
     const user = await this.userRepo.findOneBy({ id });
-    if (user?.id !== loggedInUserId) {
-      throw new ForbiddenException(`Can only update logged in users`);
-    }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
