@@ -9,7 +9,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { RegisterUserDto, UpdateUserDto } from './dto/register-user.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -61,11 +62,23 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto, loggedInUserId: string) {
+  // async update(id: string, updateUserDto: UpdateUserDto, loggedInUserId: string) {
+  //   const user = await this.userRepo.findOneBy({ id });
+  //   if (user?.id !== loggedInUserId) {
+  //     throw new ForbiddenException(`Can only update logged in users`);
+  //   }
+  //   if (!user) {
+  //     throw new NotFoundException(`User with id ${id} not found`);
+  //   }
+  //   Object.assign(user, updateUserDto);
+  //   return await this.userRepo.save(user);
+  // }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.userRepo.findOneBy({ id });
-    if (user?.id !== loggedInUserId) {
-      throw new ForbiddenException(`Can only update logged in users`);
-    }
+    // if (user?.id !== loggedInUserId) {
+    //   throw new ForbiddenException(`Can only update logged in users`);
+    // }
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }

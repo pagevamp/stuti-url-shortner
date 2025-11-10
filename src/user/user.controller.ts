@@ -12,10 +12,11 @@ import {
   Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { RegisterUserDto, UpdateUserDto } from './dto/register-user.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
 import { Throttle } from '@nestjs/throttler';
 import { AuthGuard } from 'core/auth.guard';
 import { Request } from 'express';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -38,9 +39,9 @@ export class UserController {
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
-    const user = await this.usersService.update(id, updateUserDto, req.user.sub);
+  @Patch(':id/me')
+  async update(@Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
+    const user = await this.usersService.update(req.user.sub, updateUserDto);
     return { message: 'The user has been updated successfully', data: { user } };
   }
 
