@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { Log } from './entities/log.entity';
 import { Repository } from 'typeorm';
