@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Log } from './entities/log.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { LogMetaData } from 'types/metadata';
 
 @Injectable()
 export class LogService {
@@ -10,7 +11,7 @@ export class LogService {
     private readonly logRepo: Repository<Log>,
   ) {}
 
-  async createLog(context?: string, message?: string, metadata?: Record<string, any>) {
+  async createLog(context?: string, message?: string, metadata?: LogMetaData) {
     await this.logRepo.save({ context, message, metadata });
   }
 

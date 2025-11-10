@@ -1,5 +1,13 @@
 import { Transform } from 'class-transformer';
-import { IsArray, IsBoolean, IsDateString, IsIn, IsISO31661Alpha2, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsDateString,
+  IsIn,
+  IsISO31661Alpha2,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class AnalyticsFilterDto {
   @Transform(({ value }) => new Date(value).toUTCString(), { toPlainOnly: true }) //to make the query date compatible with the date in database
@@ -31,6 +39,6 @@ export class AnalyticsFilterDto {
 
   @IsOptional()
   @IsArray()
-  @IsIn(['browser', 'os', 'device', 'country', 'url'])
-  readonly groupBy? : string[] | null
+  @IsIn(['browser', 'os', 'device', 'country', 'url'], { each: true })
+  readonly groupBy?: string[] | null;
 }
