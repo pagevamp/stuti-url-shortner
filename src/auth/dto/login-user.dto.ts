@@ -1,10 +1,10 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-export class LoginDto{
-    @IsNotEmpty()
-    @IsString()
-    username : string;
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+export class LoginDto {
+  @IsNotEmpty()
+  @IsString()
+  readonly username: string;
 
-    @IsNotEmpty()
-    @IsString()
-    password : string
+  @IsString()
+  @IsNotEmpty({ message: 'Password is required' })
+  readonly password: string;
 }

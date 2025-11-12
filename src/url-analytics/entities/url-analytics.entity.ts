@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -32,9 +33,10 @@ export class UrlAnalytics {
   readonly device?: string | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
+  @Index('idx_url_analytics_clicked_at')
   readonly clicked_at: Date;
 
   @ManyToOne(() => Url, (url) => url.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'url_id', referencedColumnName: 'id' })
-  url: Url;
+  readonly url: Url;
 }

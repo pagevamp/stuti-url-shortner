@@ -13,7 +13,6 @@ export class Urls1761698820236 implements MigrationInterface {
         "created_at" timestamptz NOT NULL DEFAULT now(),
         "deleted_at" timestamptz,
         CONSTRAINT "FK_urlss_user_id_key" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
-        
         );`,
     );
   }

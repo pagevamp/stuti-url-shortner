@@ -24,5 +24,5 @@ export class EmailVerifications {
 
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: User;
+  readonly user: User;
 }

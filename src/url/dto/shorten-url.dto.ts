@@ -1,15 +1,12 @@
-import { IsDateString, IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsString, IsUrl } from 'class-validator';
 
 export class ShortenUrlDto {
   @IsNotEmpty()
   @IsString()
-  original_url: string;
-
-  @IsNotEmpty()
-  @IsString()
-  user_id: string;
+  @IsUrl()
+  readonly original_url: string;
 
   @IsNotEmpty()
   @IsDateString()
-  expires_at: Date;
+  readonly expires_at: Date;
 }

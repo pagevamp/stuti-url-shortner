@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -23,24 +24,31 @@ export class Url {
   readonly original_url: string;
 
   @Column({ unique: true, type: 'varchar' })
+  @Index('idx_urls_short_url')
   readonly short_url: string;
 
+  @Column({ type: 'uuid' })
+  readonly user_id: string;
+
   @DeleteDateColumn({ type: 'timestamptz' })
+  @Index('idx_urls_deleted_at')
   readonly deleted_at: Date;
 
   @Column({ type: 'timestamptz' })
+  @Index('idx_urls_expires_at')
   readonly expires_at: Date;
 
   @Column({ default: false, type: 'boolean' })
-  notified: boolean; // to identify if a url has expired
+  @Index('idx_urls_notified')
+  readonly notified: boolean; // to identify if a url has expired
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
 
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
-  user: User;
+  @JoinColumn({ name: 'user_id' })
+  readonly user: User;
 
   @OneToMany(() => UrlAnalytics, (url_analytics) => url_analytics.url)
-  url_analytics: Url[];
+  readonly url_analytics: Url[];
 }

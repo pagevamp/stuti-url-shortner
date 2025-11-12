@@ -25,7 +25,7 @@ import { CoreModule } from 'core/core.module';
     LogModule,
     ConfigModule,
     JwtModule,
-    CoreModule,
+    CoreModule
   ],
   providers: [UrlService],
   controllers: [UrlController],

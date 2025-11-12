@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -24,23 +25,25 @@ export class User {
   readonly username: string;
 
   @Column({ unique: true, type: 'varchar' })
+  @Index('idx_users_email')
   readonly email: string;
 
   @Column({ type: 'varchar' })
   readonly password: string;
 
   @Column({ type: 'timestamptz', nullable: true })
-  verified_at?: Date | null;
+  @Index('idx_users_verified_at')
+  readonly verified_at?: Date | null;
 
   @UpdateDateColumn({ type: 'timestamptz' })
-  updated_at: Date;
+  readonly updated_at: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
 
   @OneToMany(() => EmailVerifications, (verification) => verification.user)
-  emailVerifications: EmailVerifications[];
+  readonly emailVerifications: EmailVerifications[];
 
   @OneToMany(() => Url, (url) => url.user)
-  urls: Url[];
+  readonly urls: Url[];
 }

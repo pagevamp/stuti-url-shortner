@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { LogMetaData } from 'types/metadata';
 
 @Entity('logs')
 export class Log {
@@ -12,7 +13,7 @@ export class Log {
   readonly message?: string | null;
 
   @Column({ type: 'jsonb', nullable: true })
-  readonly metadata?: Record<string, any> | null; 
+  readonly metadata?: LogMetaData | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   readonly created_at: Date;
