@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Req,
   Res,
@@ -15,6 +16,7 @@ import { ShortenUrlDto } from './dto/shorten-url.dto';
 import { AuthGuard } from 'core/auth.guard';
 import { Request, Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
+import { UpdateUrlDto } from './dto/update-url.dto';
 
 @Controller('urls')
 export class UrlController {
@@ -40,5 +42,13 @@ export class UrlController {
   ) {
     const originalUrl = await this.urlService.getOriginalUrl(short_url, req);
     res.redirect(originalUrl);
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Patch(':id/me')
+  async updateUrl(@Body() updateUrlDto: UpdateUrlDto, @Req() req: Request) {
+    const url = await this.urlService.updateUrl(req.user.sub, updateUrlDto);
+    return { message: 'The user has been updated successfully', data: { url } };
   }
 }

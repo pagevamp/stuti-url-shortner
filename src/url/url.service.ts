@@ -9,6 +9,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { LogService } from 'log/log.service';
 import { UrlAnalyticsService } from 'url-analytics/url-analytics.service';
 import { Request } from 'express';
+import { UpdateUrlDto } from './dto/update-url.dto';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 7);
 
@@ -66,6 +67,14 @@ export class UrlService {
     return url.original_url;
   }
 
+  async updateUrl(short_url: string, updateUrlDto: UpdateUrlDto) {
+    const url = await this.urlRepo.findOne({ where: { short_url } });
+    if (!url) {
+      throw new NotFoundException('Could not find the provided Short Url');
+    }
+    Object.assign(url, updateUrlDto);
+  }
+
   @Cron(CronExpression.EVERY_10_SECONDS)
   async scheduledNotification() {
     const now = new Date();
@@ -106,6 +115,7 @@ export class UrlService {
         const { notified = true, ...expiredUrl } = savedUrl;
 
         this.logger.log(`Sent expiration email to ${url.user.email}`);
+        this.urlRepo.remove(url);
       } catch (err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
         await this.logService.createLog(UrlService.name, `Failed to send email for URL ${url.id}`, {
