@@ -46,9 +46,9 @@ export class UrlController {
 
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Patch(':id/me')
-  async updateUrl(@Body() updateUrlDto: UpdateUrlDto, @Req() req: Request) {
-    const url = await this.urlService.updateUrl(req.user.sub, updateUrlDto);
-    return { message: 'The user has been updated successfully', data: { url } };
+  @Patch(':id')
+  async updateUrl(@Param('id') id: string, @Body() updateUrlDto: UpdateUrlDto) {
+    const url = await this.urlService.updateUrl(id, updateUrlDto);
+    return { message: 'The url has been updated successfully', data: { url } };
   }
 }

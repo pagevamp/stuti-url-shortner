@@ -67,8 +67,8 @@ export class UrlService {
     return url.original_url;
   }
 
-  async updateUrl(short_url: string, updateUrlDto: UpdateUrlDto) {
-    const url = await this.urlRepo.findOne({ where: { short_url } });
+  async updateUrl(id: string, updateUrlDto: UpdateUrlDto) {
+    const url = await this.urlRepo.findOne({ where: { id } });
     if (!url) {
       throw new NotFoundException('Could not find the provided Short Url');
     }
