@@ -111,11 +111,15 @@ export class UrlService {
           },
         );
 
-        const savedUrl = await this.urlRepo.save(url);
-        const { notified = true, ...expiredUrl } = savedUrl;
+         const updatedUrl = await this.urlRepo.save({
+           ...url,
+           notified: true,
+         });
 
-        this.logger.log(`Sent expiration email to ${url.user.email}`);
-        this.urlRepo.remove(url);
+         this.logger.log(`Sent expiration email to ${url.user.email}`);
+
+         await this.urlRepo.remove(updatedUrl);
+
       } catch (err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
         await this.logService.createLog(UrlService.name, `Failed to send email for URL ${url.id}`, {

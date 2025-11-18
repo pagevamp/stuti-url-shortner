@@ -28,9 +28,17 @@ export class UserService {
       throw new ConflictException('Email already verified');
     }
 
-    const userWithEmail = await this.userRepo.save(user);
-    const { verified_at = new Date(), ...emailVerifiedUser } = userWithEmail;
-  }
+    const updatedUser = {
+      ...user,
+      verified_at: new Date(),
+    };
+
+    await this.userRepo.save(updatedUser);
+
+    return {
+      message: 'Email verified successfully',
+      email: updatedUser.email,
+    };}
 
   async create(createUserDto: RegisterUserDto) {
     const { name, email, username, password } = createUserDto;
