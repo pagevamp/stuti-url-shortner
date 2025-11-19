@@ -23,7 +23,6 @@ export class UserService {
     @InjectRepository(EmailVerifications)
     private readonly emailVerificationRepo: Repository<EmailVerifications>,
     private readonly hashService: HashService,
-    private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,

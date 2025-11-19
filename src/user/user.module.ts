@@ -11,7 +11,7 @@ import { AuthModule } from 'auth/auth.module';
 import { EmailVerifications } from 'email-verification/entities/email-verification.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User,EmailVerifications]), JwtModule, ConfigModule, CoreModule, AuthModule],
+  imports: [TypeOrmModule.forFeature([User,EmailVerifications]), JwtModule, ConfigModule, CoreModule],
   controllers: [UserController],
   providers: [UserService, HashService],
   exports: [UserService, HashService],
