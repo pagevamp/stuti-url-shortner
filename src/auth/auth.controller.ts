@@ -15,13 +15,6 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('send-email')
-  async sendEmail(@Body() dto: RequestEmailDto) {
-    await this.authService.sendEmail(dto.email);
-    return { message: 'Verification link sent to your email' };
-  }
-
-  @HttpCode(HttpStatus.OK)
   @Post('resend-email')
   async resendVerificationLink(@Body() dto: RequestEmailDto) {
     await this.authService.resendVerificationLink(dto.email);
