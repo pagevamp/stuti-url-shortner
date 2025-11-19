@@ -7,9 +7,11 @@ import { HashService } from './hash.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { CoreModule } from 'core/core.module';
+import { AuthModule } from 'auth/auth.module';
+import { EmailVerifications } from 'email-verification/entities/email-verification.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), JwtModule, ConfigModule, CoreModule],
+  imports: [TypeOrmModule.forFeature([User,EmailVerifications]), JwtModule, ConfigModule, CoreModule, AuthModule],
   controllers: [UserController],
   providers: [UserService, HashService],
   exports: [UserService, HashService],

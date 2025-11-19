@@ -1,8 +1,8 @@
+import { JwtService } from '@nestjs/jwt';
+import { AuthService } from './../auth/auth.service';
 import { HashService } from './hash.service';
 import {
-  BadRequestException,
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,14 +11,60 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ConfigService } from '@nestjs/config';
+import { MailService } from 'utils/mail.service';
+import { EmailVerifications } from 'email-verification/entities/email-verification.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @InjectRepository(EmailVerifications)
+    private readonly emailVerificationRepo: Repository<EmailVerifications>,
     private readonly hashService: HashService,
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+    private readonly mailService: MailService,
+    private readonly jwtService: JwtService,
   ) {}
+
+  public async sendEmail(email: string) {
+    const user = await this.userRepo.findOneBy({ email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.verified_at) {
+      throw new ConflictException('User already verified!');
+    }
+
+    const expires_at = new Date(
+      Date.now() + Number(this.configService.get('JWT_EXPIRATION_TIME')) * 1000,
+    );
+
+    const token = this.jwtService.sign(
+      { email },
+      {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}s`,
+      },
+    );
+
+    const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
+
+    await this.mailService.sendMail(email, {
+      template: 'email',
+      from: this.configService.get('EMAIL_USER'),
+      to: email,
+      subject: `Verify Your Email Address`,
+      project: '.SUS',
+      url,
+      expiresAt: expires_at.toUTCString(),
+    });
+
+    await this.emailVerificationRepo.save({ user, token, expires_at });
+  }
 
   async confirmEmail(email: string) {
     const user = await this.userRepo.findOne({ where: { email } });
@@ -38,7 +84,8 @@ export class UserService {
     return {
       message: 'Email verified successfully',
       email: updatedUser.email,
-    };}
+    };
+  }
 
   async create(createUserDto: RegisterUserDto) {
     const { name, email, username, password } = createUserDto;
@@ -62,6 +109,7 @@ export class UserService {
 
     const savedUser = await this.userRepo.save(user);
     const { password: _, ...userWithoutPassword } = savedUser;
+    await this.sendEmail(email);
     return userWithoutPassword;
   }
 
