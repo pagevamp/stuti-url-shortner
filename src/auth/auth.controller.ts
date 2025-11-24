@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RequestEmailDto } from './dto/request-email.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { LoginDto } from './dto/login-user.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -10,8 +11,16 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto.username, dto.password);
+  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
+    const { access_token } = await this.authService.login(dto.username, dto.password);
+
+    res.cookie('jwt', access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: 48 * 60 * 60 * 1000, // 2 days
+    });
+    return { message: 'Logged in successfully' };
   }
 
   @HttpCode(HttpStatus.OK)
