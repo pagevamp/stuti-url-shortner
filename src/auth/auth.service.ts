@@ -72,8 +72,9 @@ export class AuthService {
 
   public async resendVerificationLink(email: string) {
     const user = await this.userRepo.findOneBy({ email });
-    if (!user) throw new Error('User not found');
-
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     if (user.verified_at) {
       throw new ConflictException('Email already verified');
     }
