@@ -1,11 +1,7 @@
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './../auth/auth.service';
 import { HashService } from './hash.service';
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -68,6 +64,10 @@ export class UserService {
   async confirmEmail(email: string) {
     const user = await this.userRepo.findOne({ where: { email } });
     if (!user) throw new NotFoundException('User not found');
+    // const emailOwner = await this.emailVerificationRepo.findOne({
+    //   where: { id: user.emailVerifications.id },
+    // });
+
 
     if (user.verified_at) {
       throw new ConflictException('Email already verified');
