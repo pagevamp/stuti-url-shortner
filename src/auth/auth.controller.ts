@@ -14,7 +14,7 @@ export class AuthController {
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const { access_token } = await this.authService.login(dto.username, dto.password);
 
-    res.cookie('jwt', access_token, {
+    res.cookie('accessToken', access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
