@@ -18,7 +18,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      // path: '/',
+      path: '/',
       maxAge: 48 * 60 * 60 * 1000, // 2 days
     });
     return { message: 'Logged in successfully' };

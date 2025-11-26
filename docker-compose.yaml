@@ -1,6 +1,10 @@
 services:
   api:
-    build: .
+    build:
+    context: .
+    dockerfile: Dockerfile
+    target: ${NODE_ENV}
+
     depends_on:
       - postgres
 
@@ -9,6 +13,7 @@ services:
 
     environment:
       PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_HOST: ${REDIS_HOST}
       DB_HOST: ${DB_HOST}

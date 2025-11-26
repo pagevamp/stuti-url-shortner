@@ -30,6 +30,9 @@ export class EnvConfig {
   REDIS_PORT: number;
 
   @IsString()
+  NODE_ENV: string;
+
+  @IsString()
   JWT_SECRET: string;
 
   @IsString()
