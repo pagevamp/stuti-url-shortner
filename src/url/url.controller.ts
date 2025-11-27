@@ -22,6 +22,7 @@ import { UpdateUrlDto } from './dto/update-url.dto';
 export class UrlController {
   constructor(private readonly urlService: UrlService) {}
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get('/')
   async getAllUrls(@Req() request: Request) {
