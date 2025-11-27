@@ -29,7 +29,7 @@ export class UrlController {
     const user_id = request.user.sub;
     const urls = await this.urlService.getAllUrls(user_id);
     return {
-      message: 'These are the filtered url analytics',
+      message: 'These are the urls of this user ',
       data: { urls },
     };
   }
