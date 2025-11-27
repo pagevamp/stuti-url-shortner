@@ -22,6 +22,17 @@ import { UpdateUrlDto } from './dto/update-url.dto';
 export class UrlController {
   constructor(private readonly urlService: UrlService) {}
 
+  @HttpCode(HttpStatus.OK)
+  @Get('/')
+  async getAllUrls(@Req() request: Request) {
+    const user_id = request.user.sub;
+    const urls = await this.urlService.getAllUrls(user_id);
+    return {
+      message: 'These are the filtered url analytics',
+      data: { urls },
+    };
+  }
+
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/')

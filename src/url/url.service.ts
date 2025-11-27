@@ -42,6 +42,11 @@ export class UrlService {
     return short_url;
   }
 
+  async getAllUrls(user_id: string) {
+    const urls = await this.urlRepo.find({ where: { user_id } });
+    return urls;
+  }
+
   async shortenUrl(user_id: string, original_url: string, expires_at: Date) {
     const short_url = await this.generateShortUrl();
     const url = this.urlRepo.create({
@@ -111,15 +116,14 @@ export class UrlService {
           },
         );
 
-         const updatedUrl = await this.urlRepo.save({
-           ...url,
-           notified: true,
-         });
+        const updatedUrl = await this.urlRepo.save({
+          ...url,
+          notified: true,
+        });
 
-         this.logger.log(`Sent expiration email to ${url.user.email}`);
+        this.logger.log(`Sent expiration email to ${url.user.email}`);
 
-         await this.urlRepo.remove(updatedUrl);
-
+        await this.urlRepo.remove(updatedUrl);
       } catch (err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
         await this.logService.createLog(UrlService.name, `Failed to send email for URL ${url.id}`, {
