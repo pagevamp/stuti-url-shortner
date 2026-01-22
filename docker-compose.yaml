@@ -1,12 +1,12 @@
 services:
   api:
-    build:
-    context: .
-    dockerfile: Dockerfile
-    target: ${NODE_ENV}
+    build: 
+      dockerfile: Dockerfile
+      target: ${NODE_ENV}
 
     depends_on:
       - postgres
+      - redis
 
     env_file:
       - .env
@@ -24,10 +24,22 @@ services:
       DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}
     ports:
       - '3002:3000'
-      - '6380:6379'
+      # - '6380:6379'
 
-    networks:
-      - url_network
+    # networks:
+    #   - url_network
+
+  redis:
+    image: redis
+    env_file:
+      - .env
+    environment:
+      host: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+    ports:
+      - '6379:6379'
+    # networks:
+    #   - url_network  
 
   postgres:
     image: postgres:latest
@@ -46,11 +58,11 @@ services:
     volumes:
       - url_volume:/var/lib/postgresql/data
 
-    networks:
-      - url_network
+#     networks:
+#       - url_network
 
 volumes:
   url_volume:
 
-networks:
-  url_network:
+# networks:
+#   url_network:

@@ -20,12 +20,12 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
-  },
-  "paths": {
-    "@/*": ["*"],
-    "@components/*": ["components/*"],
-    "@utils/*": ["utils/*"]
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@/*": ["*"],
+      "@components/*": ["components/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

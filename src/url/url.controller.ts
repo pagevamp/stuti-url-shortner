@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -57,10 +58,18 @@ export class UrlController {
   }
 
   @UseGuards(AuthGuard)
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.PARTIAL_CONTENT)
   @Patch(':id')
   async updateUrl(@Param('id') id: string, @Body() updateUrlDto: UpdateUrlDto) {
     const url = await this.urlService.updateUrl(id, updateUrlDto);
     return { message: 'The url has been updated successfully', data: { url } };
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
+  async removeUrl(@Param('id') id: string) {
+    await this.urlService.removeUrl(id);
+    return { message: 'The url has been deleted successfully' };
   }
 }

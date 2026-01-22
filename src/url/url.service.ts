@@ -78,6 +78,15 @@ export class UrlService {
       throw new NotFoundException('Could not find the provided Short Url');
     }
     Object.assign(url, updateUrlDto);
+    return await this.urlRepo.save(url);
+  }
+
+  async removeUrl(id: string) {
+    const url = await this.urlRepo.findOne({ where: { id } });
+    if (!url) {
+      throw new NotFoundException('Could not find Short Url');
+    }
+    await this.urlRepo.softDelete(id);
   }
 
   @Cron(CronExpression.EVERY_10_SECONDS)
@@ -123,7 +132,7 @@ export class UrlService {
 
         this.logger.log(`Sent expiration email to ${url.user.email}`);
 
-        await this.urlRepo.remove(updatedUrl);
+        await this.urlRepo.softDelete(updatedUrl);
       } catch (err) {
         this.logger.error(`Failed to send email to ${url.user.email}: ${err.message}`);
         await this.logService.createLog(UrlService.name, `Failed to send email for URL ${url.id}`, {

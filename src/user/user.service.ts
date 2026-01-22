@@ -68,7 +68,6 @@ export class UserService {
     //   where: { id: user.emailVerifications.id },
     // });
 
-
     if (user.verified_at) {
       throw new ConflictException('Email already verified');
     }
